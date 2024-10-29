@@ -1,0 +1,259 @@
+\documentclass{../../../kin_math}
+
+\header{Elijah Kin}{Homework 2}{AMSC660}
+\headrule
+
+\begin{document}
+
+\begin{questions}
+  \question Suppose you need to evaluate the derivative of a function $f(x)$ by forward difference, i.e.,
+  \begin{equation}
+    f'(x) \approx \frac{f(x + h) - f(x)}{h}.
+  \end{equation}
+  The function is not available analytically but can be evaluated at any point $x$ with a relative error $\epsilon$ such that $|\epsilon| \leq 10^{-14}$. Suppose the function and its second derivative are of the order of 1. Give a rough estimate of the optimal value for $h$ that minimizes the error in $f'(x)$.
+  \begin{solution}
+    Since evaluating $f$ introduces some error, our approximation will be given by
+    \begin{equation*}
+      \frac{f(x + h)(1 + \epsilon_1) - f(x)(1 + \epsilon_2)}{h}
+    \end{equation*}
+    where $|\epsilon_1|, |\epsilon_2| \leq 10^{-14}$. Further, by Taylor expansion we have that
+    \begin{equation*}
+      f(x + h) = \sum_{n = 0}^\infty \frac{f^{(n)}(x)}{n!} h^n = f(x) + f'(x)h + f''(x)\frac{h^2}{2} + O(h^3)
+    \end{equation*}
+    and so our approximation yields
+    \begin{multline*}
+      \frac{\left(f(x) + f'(x)h + f''(x)\frac{h^2}{2} + O(h^3)\right)(1 + \epsilon_1) - f(x)(1 + \epsilon_2)}{h} \\
+      = \frac{\left(f'(x)h + f''(x)\frac{h^2}{2} + O(h^3)\right)(1 + \epsilon_1) + f(x)(\epsilon_1 - \epsilon_2)}{h} \\
+      = \left(f'(x) + f''(x)\frac{h}{2} + O(h^2)\right)(1 + \epsilon_1) + \frac{f(x)(\epsilon_1 - \epsilon_2)}{h}
+    \end{multline*}
+    Then ignoring the $O(h^2)$ terms and approximating $f(x)$ and $f''(x)$ by 1 (since it was specified they are of this order), our approximation of $f'(x)$ roughly yields
+    \begin{equation*}
+      \left(f'(x) + \frac{h}{2}\right)(1 + \epsilon_1) + \frac{(\epsilon_1 - \epsilon_2)}{h}
+    \end{equation*}
+    and so by subtracting $f'(x)$, we find that the error is roughly given by
+    \begin{equation*}
+      \left(f'(x) + \frac{h}{2}\right)(1 + \epsilon_1) + \frac{(\epsilon_1 - \epsilon_2)}{h} - f'(x) = f'(x)\epsilon_1 + \frac{h}{2}(1 + \epsilon_1) + \frac{\epsilon_1 - \epsilon_2}{h}.
+    \end{equation*}
+    In order to minimize this error, we differentiate this expression with respect to $h$:
+    \begin{equation*}
+      \frac{d}{dh}\left[f'(x)\epsilon_1 + \frac{h}{2}(1 + \epsilon_1) + \frac{\epsilon_1 - \epsilon_2}{h}\right] = \frac{1 + \epsilon_1}{2} - \frac{\epsilon_1 - \epsilon_2}{h^2}
+    \end{equation*}
+    Then setting this expression equal to $0$ and solving for $h$, we find
+    \begin{equation*}
+      h^2 = \frac{2(\epsilon_1 - \epsilon_2)}{1 + \epsilon_1} \leq \frac{4 \cdot 10^{-14}}{1 - 10^{-14}} \approx 4 \cdot 10^{-14}
+    \end{equation*}
+    suggesting the optimal value for $h$ to minimize the error in $f'(x)$ is
+    \begin{equation*}
+      h \approx \sqrt{4 \cdot 10^{-14}} = 2 \cdot 10^{-7}.
+    \end{equation*}
+  \end{solution}
+
+  \question Consider the polynomial space $\mathcal{P}_n(x)$, $x \in [-1, 1]$. Let $T_k$, $k = 0, 1, \dots, n$, be the Chebyshev basis in it. The Chebyshev polynomials are defined via
+  \begin{equation*}
+    T_k = \cos(k \arccos x).
+  \end{equation*}
+  \begin{enumerate}
+    \item Use the trigonometric formula
+    \begin{equation*}
+      \cos(a) + \cos(b) = 2\cos\left(\frac{a + b}{2}\right)\cos\left(\frac{a - b}{2}\right)
+    \end{equation*}
+    to derive the three-term recurrence relationship for the Chebyshev polynomials
+    \begin{equation}
+      T_0(x) = 1, \quad T_1(x) = x, \quad T_{k + 1}(x) = 2xT_k(x) - T_{k - 1}(x), \quad k = 1, 2, \dots
+    \end{equation}
+    \begin{solution}
+      We will first prove the base cases of the recurrence. By definition of the Chebyshev polynomials,
+      \begin{equation*}
+        T_0 = \cos(0 \arccos x) = \cos(0) = 1
+      \end{equation*}
+      and likewise
+      \begin{equation*}
+        T_1 = \cos(1 \arccos x) = \cos(\arccos x) = x
+      \end{equation*}
+      since $x \in [-1, 1]$ where $\arccos$ is defined. It remains to show that
+      \begin{equation*}
+        T_{k + 1}(x) = 2xT_k(x) - T_{k - 1}(x)
+      \end{equation*}
+      for $k \in \mathbb{N}$ such that $k \geq 1$. By the definition of Chebyshev polynomials, the above equation is true if and only if
+      \begin{equation*}
+        \cos((k + 1) \arccos x) = 2x \cos(k \arccos x) - \cos((k - 1) \arccos x).
+      \end{equation*}
+      Then, adding $\cos((k - 1) \arccos x)$ to both sides yields
+      \begin{equation*}
+        \cos((k + 1) \arccos x) + \cos((k - 1) \arccos x) = 2x \cos(k \arccos x)
+      \end{equation*}
+      which by the given trigonometric identity is true if and only if
+      \begin{equation*}
+        2\cos\left(\frac{2k \arccos x}{2}\right)\cos\left(\frac{2 \arccos x}{2}\right) = 2x\cos(k \arccos x)
+      \end{equation*}
+      or equivalently,
+      \begin{equation*}
+        2\cos(k \arccos x)\cos(\arccos x) = 2x\cos(k \arccos x).
+      \end{equation*}
+      Finally, note that $\cos(\arccos x) = x$ for $x \in [-1, 1]$, and hence the original equation is true if and only if
+      \begin{equation*}
+        2x \cos(k \arccos x) = 2x\cos(k \arccos x),
+      \end{equation*}
+      which is clearly true.
+    \end{solution}
+    \item Consider the differentiation map
+    \begin{equation*}
+      \frac{d}{dx}: \mathcal{P}_n \to \mathcal{P}_{n - 1}.
+    \end{equation*}
+    Write the matrix of the differentiation map with respect to the Chebyshev bases in $\mathcal{P}_n$ and $\mathcal{P}_{n - 1}$ for $n = 7$. \emph{Hint: you might find helpful properties of Chebyshev polynomials presented in Section 3.3.1 of \textcolor{magenta}{Gil, Segura, Temme, ``Numerical Methods For Special Functions''}.}
+    \begin{solution}
+      From part (a), we know that $T_0(x) = 1$ and $T_1(x) = x$. We first compute the Chebyshev polynomials up to $T_7$ using the recurrence proven in part (a):
+      \begin{itemize}
+        \item $T_2(x) = 2xT_1(x) - T_0(x) = 2x^2 - 1$
+        \item $T_3(x) = 2xT_2(x) - T_1(x) = 4x^3 - 3x$
+        \item $T_4(x) = 2xT_3(x) - T_2(x) = 8x^4 - 8x^2 + 1$
+        \item $T_5(x) = 2xT_4(x) - T_3(x) = 16x^5 - 20x^3 + 5x$
+        \item $T_6(x) = 2xT_5(x) - T_4(x) = 32x^6 - 48x^4 + 18x^2 - 1$
+        \item $T_7(x) = 2xT_6(x) - T_5(x) = 64x^7 - 112x^5 + 56x^3 - 7x$
+      \end{itemize}
+      We then differentiate each of the Chebyshev polynomials found above and write them in terms of the Chebyshev basis:
+      \begin{itemize}
+        \item $T_0'(x) = 0$
+        \item $T_1'(x) = 1 = T_0(x)$
+        \item $T_2'(x) = 4x = 4T_1(x)$
+        \item $T_3'(x) = 12x^2 - 3 = 6T_2(x) + 3T_0(x)$
+        \item $T_4'(x) = 32x^3 - 16x = 8T_3(x) + 8T_1(x)$
+        \item $T_5'(x) = 80x^4 - 60x^2 + 5 = 10T_4(x) + 10T_2(x) + 5T_0(x)$
+        \item $T_6'(x) = 192x^5 - 192x^3 + 36x = 12T_5(x) + 12T_3(x) + 12T_1(x)$
+        \item $T_7'(x) = 448x^6 - 560x^4 + 168x^2 - 7 = 14T_6(x) + 14T_4(x) + 14T_2(x) + 7T_0(x)$
+      \end{itemize}
+      and hence the matrix of the differentiation map is
+      \begin{equation*}
+        \begin{bmatrix}
+          0 & 1 & 0 & 3 & 0 & 5 & 0 & 7 \\
+          0 & 0 & 4 & 0 & 8 & 0 & 12 & 0 \\
+          0 & 0 & 0 & 6 & 0 & 10 & 0 & 14 \\
+          0 & 0 & 0 & 0 & 8 & 0 & 12 & 0 \\
+          0 & 0 & 0 & 0 & 0 & 10 & 0 & 14 \\
+          0 & 0 & 0 & 0 & 0 & 0 & 12 & 0 \\
+          0 & 0 & 0 & 0 & 0 & 0 & 0 & 14
+        \end{bmatrix}
+      \end{equation*}
+      with respect to the Chebyshev bases $\mathcal{P}_7$ and $\mathcal{P}_6$.
+    \end{solution}
+  \end{enumerate}
+
+  \newpage
+  \question Let $A = (a_{ij})$ be an $m \times n$ matrix.
+  \begin{enumerate}
+    \item Prove that the $l_1$-norm of $A$ is
+    \begin{equation*}
+      \lVert A \rVert_1 = \max_j \sum_i |a_{ij}|,
+    \end{equation*}
+    i.e., the maximal column sum of absolute values. Find the maximizing vector.
+    \begin{solution}
+      We will first show that $\lVert A \rVert_1 \leq \max_j \sum_i |a_{ij}|$. By the definition of matrix norms and the $l_1$-norm for vectors,
+      \begin{equation*}
+        \lVert A \rVert_1 = \max_{x \neq 0} \frac{\lVert Ax \rVert_1}{\lVert x \rVert_1} = \max_{x \neq 0} \frac{\sum_{i = 1}^m |(Ax)_i|}{\sum_{j = 1}^n |x_j|}.
+      \end{equation*}
+      But then note that by the definition of matrix multiplication,
+      \begin{equation*}
+        (Ax)_i = \sum_{k = 1}^n a_{ik}x_k
+      \end{equation*}
+      and hence
+      \begin{equation*}
+        \lVert A \rVert_1 = \max_{x \neq 0} \frac{\sum_{i = 1}^m \left|\sum_{k = 1}^n a_{ik}x_k\right|}{\sum_{j = 1}^n |x_j|}.
+      \end{equation*}
+      Further, note that by the triangle inequality and multiplicativity of absolute value,
+      \begin{equation*}
+        \left|\sum_{k = 1}^n a_{ik}x_k\right| \leq \sum_{k = 1}^n |a_{ik}x_k| = \sum_{k = 1}^n |a_{ik}||x_k|,
+      \end{equation*}
+      so we can upper bound
+      \begin{multline*}
+        \lVert A \rVert_1 = \max_{x \neq 0} \frac{\sum_{i = 1}^m \left|\sum_{k = 1}^n a_{ik}x_k\right|}{\sum_{j = 1}^n |x_j|} \\
+        \leq \max_{x \neq 0} \frac{\sum_{i = 1}^m \sum_{k = 1}^n |a_{ik}||x_k|}{\sum_{j = 1}^n |x_j|} = \max_{x \neq 0} \frac{\sum_{k = 1}^n \sum_{i = 1}^m |a_{ik}||x_k|}{\sum_{j = 1}^n |x_j|}.
+      \end{multline*}
+      Further, note that for $1 \leq k \leq n$,
+      \begin{equation*}
+        \sum_{i = 1}^m |a_{ik}| \leq \max_{1 \leq j \leq n} \sum_{i = 1}^m |a_{ij}|,
+      \end{equation*}
+      and so we can eliminate dependence on $x$, since
+      \begin{multline*}
+        \lVert A \rVert_1 \leq \max_{x \neq 0} \frac{\sum_{k = 1}^n \sum_{i = 1}^m |a_{ik}||x_k|}{\sum_{j = 1}^n |x_j|} \leq \max_{x \neq 0} \frac{\sum_{k = 1}^n \max_{1 \leq j \leq n} \sum_{i = 1}^m |a_{ij}||x_k|}{\sum_{j = 1}^n |x_j|} \\
+        = \max_{x \neq 0} \frac{\max_{1 \leq j \leq n} \sum_{i = 1}^m |a_{ij}| \sum_{k = 1}^n |x_k|}{\sum_{j = 1}^n |x_j|} = \max_{x \neq 0} \max_{1 \leq j \leq n} \sum_{i = 1}^m |a_{ij}| = \max_{1 \leq j \leq n} \sum_{i = 1}^m |a_{ij}|.
+      \end{multline*}
+      Hence, we have that $\lVert A \rVert_1 \leq \max_{1 \leq j \leq n} \sum_{i = 1}^m |a_{ij}|$. Now towards showing the other direction, let $j'$ be the maximizer of
+      \begin{equation*}
+        \max_{1 \leq j \leq n} \sum_{i = 1}^m |a_{ij}|
+      \end{equation*}
+      and further, let $v$ be the vector with $1$ as the $j'$th entry, and all zeros otherwise,
+      \begin{equation*}
+        v = \begin{bmatrix} 0 & \dots & 0 & 1 & 0 & \dots & 0 \end{bmatrix}^\top.
+      \end{equation*}
+      Then note that
+      \begin{equation*}
+        \lVert v \rVert_1 = |0| + \dots + |0| + |1| + |0| + \dots + |0| = 1
+      \end{equation*}
+      and also that
+      \begin{equation*}
+        \lVert Av \rVert_1 = \sum_{i = 1}^m |(Av)_i| = \sum_{i = 1}^m \left| \sum_{j = 1}^n a_{ij}v_j \right| = \sum_{i = 1}^m \left| a_{ij'} \right| = \max_{1 \leq j \leq n} \sum_{i = 1}^m |a_{ij}|
+      \end{equation*}
+      since $v_j = 0$ when $j \neq j'$. Hence,
+      \begin{equation*}
+        \lVert A \rVert_1 = \max_{x \neq 0} \frac{\lVert Ax\rVert_1}{\lVert x \rVert_1} \geq \frac{\lVert Av \rVert_1}{\lVert v \rVert_1} = \lVert Av \rVert_1 = \max_{1 \leq j \leq n} \sum_{i = 1}^m |a_{ij}|
+      \end{equation*}
+      and therefore both directions hold, so
+      \begin{equation*}
+        \lVert A \rVert_1 = \max_{1 \leq j \leq n} \sum_{i = 1}^m |a_{ij}|
+      \end{equation*}
+      as desired.
+    \end{solution}
+    \item Prove that the max-norm or $l_\infty$-norm of $A$ is
+    \begin{equation*}
+      \lVert A \rVert_\text{max} = \max_i \sum_j |a_{ij}|,
+    \end{equation*}
+    i.e., the maximal row sum of absolute values. Find the maximizing vector.
+    \begin{solution}
+      We will first show that $\lVert A \rVert_\text{max} \leq \max_i \sum_j |a_{ij}|$. By the definition of matrix norms and the $l_\infty$-norm for vectors,
+      \begin{equation*}
+        \lVert A \rVert_\text{max} = \max_{x \neq 0} \frac{\lVert Ax \rVert_\text{max}}{\lVert x \rVert_\text{max}} = \max_{x \neq 0} \frac{\max_{1 \leq i \leq m} |(Ax)_i|}{\max_{1 \leq k \leq n} |x_k|}.
+      \end{equation*}
+      But then note that by the definition of matrix multiplication,
+      \begin{equation*}
+        (Ax)_i = \sum_{j = 1}^n a_{ij}x_j
+      \end{equation*}
+      and hence
+      \begin{equation*}
+        \lVert A \rVert_\text{max} = \max_{x \neq 0} \frac{\max_{1 \leq i \leq m} \left|\sum_{j = 1}^n a_{ij}x_j\right|}{\max_{1 \leq k \leq n} |x_k|}.
+      \end{equation*}
+      Further, note that by the triangle inequality and the multiplicativity of absolute value,
+      \begin{equation*}
+        \left|\sum_{j = 1}^n a_{ij}x_j\right| \leq \sum_{j = 1}^n |a_{ij}x_j| = \sum_{j = 1}^n |a_{ij}||x_j| \leq \sum_{j = 1}^n |a_{ij}| \max_{1 \leq k \leq n} |x_k| = \max_{1 \leq k \leq n} |x_k| \sum_{j = 1}^n |a_{ij}|.
+      \end{equation*}
+      Therefore, we can upper bound $\lVert A \rVert_\text{max}$ and eliminate dependence on $x$ since
+      \begin{multline*}
+        \lVert A \rVert_\text{max} = \max_{x \neq 0} \frac{\max_{1 \leq i \leq m} \left|\sum_{j = 1}^n a_{ij}x_j\right|}{\max_{1 \leq k \leq n} |x_k|} \leq \max_{x \neq 0} \frac{\max_{1 \leq i \leq m} \max_{1 \leq k \leq n} |x_k| \sum_{j = 1}^n |a_{ij}|}{\max_{1 \leq k \leq n} |x_k|} \\
+        = \max_{x \neq 0} \max_{1 \leq i \leq m} \sum_{j = 1}^n |a_{ij}| = \max_{1 \leq i \leq m} \sum_{j = 1}^n |a_{ij}|,
+      \end{multline*}
+      and so we have that $\lVert A \rVert_\text{max} \leq \max_{1 \leq i \leq m} \sum_{j = 1}^n |a_{ij}|$. Now towards showing the other direction, let $i'$ denote the row of $A$ with the maximal row sum and define
+      \begin{equation*}
+        v = \begin{bmatrix} \textsf{sign}(a_{i'1}) & \textsf{sign}(a_{i'2}) & \dots & \textsf{sign}(a_{i'n}) \end{bmatrix}^\top.
+      \end{equation*}
+      Then note that
+      \begin{equation*}
+        \lVert v \rVert_\text{max} = \max_{1 \leq j \leq n} |\textsf{sign}(a_{i'j})| = \max_{1 \leq j \leq n} 1 = 1
+      \end{equation*}
+      and also that
+      \begin{multline*}
+        \lVert Av \rVert_\text{max} = \max_{1 \leq i \leq m} |(Av)_i| = \max_{1 \leq i \leq m} \left|\sum_{j = 1}^n a_{ij} v_j\right| = \left|\sum_{j = 1}^n a_{i'j} v_j\right| \\
+        = \left|\sum_{j = 1}^n a_{i'j} \textsf{sign}(a_{i'j}) \right| = \left|\sum_{j = 1}^n |a_{i'j}| \right| = \sum_{j = 1}^n |a_{i'j}| = \max_{1 \leq i \leq m} \sum_{j = 1}^n |a_{ij}|.
+      \end{multline*}
+      Hence,
+      \begin{equation*}
+        \lVert A \rVert_\text{max} = \max_{x \neq 0} \frac{\lVert Ax \rVert_\text{max}}{\lVert x \rVert_\text{max}} \geq \frac{\lVert Av \rVert_\text{max}}{\lVert v \rVert_\text{max}} = \lVert Av \rVert_\text{max} = \max_{1 \leq i \leq m} \sum_{j = 1}^n |a_{ij}|
+      \end{equation*}
+      and therefore both directions hold, so
+      \begin{equation*}
+        \lVert A \rVert_\text{max} = \max_{1 \leq i \leq m} \sum_{j = 1}^n |a_{ij}|
+      \end{equation*}
+      as desired.
+    \end{solution}
+  \end{enumerate}
+\end{questions}
+
+\end{document}

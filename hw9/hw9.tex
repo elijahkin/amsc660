@@ -1,0 +1,80 @@
+\documentclass{../../../kin_math}
+
+\header{Elijah Kin}{Homework 9}{AMSC660}
+\headrule
+
+\begin{document}
+
+\begin{questions}
+  \question Suppose an invertible matrix $A$ has a block form
+  \begin{equation}
+    A = \begin{bmatrix} A_{11} & & A_{13} \\ & A_{22} & A_{23} \\ A_{31} & A_{32} & A_{33} \end{bmatrix}.
+  \end{equation}
+  Assume that LU decompositions for $A_{11}$ and $A_{22}$ are available: $A_{11} = L_{11} U_{11}$, $A_{22} = L_{22} U_{22}$.
+  \begin{enumerate}
+    \item Show that $A$ can be factored as
+    \begin{equation}
+      \label{eq:schur}
+      A = \begin{bmatrix} L_{11} & & \\ & L_{22} & \\ A_{31} U_{11}^{-1} & A_{32} U_{22}^{-1} & I \end{bmatrix} \begin{bmatrix} I & & \\ & I & \\ & & S_{33} \end{bmatrix} \begin{bmatrix} U_{11} & & L_{11}^{-1} A_{13} \\ & U_{22} & L_{22}^{-1} A_{23} \\ & & I \end{bmatrix},
+    \end{equation}
+    where the matrix $S_{33}$ is called the \emph{Schur complement}. Derive the formula for $S_{33}$.
+    \begin{solution}
+      Multiplying the left two matrices of the right-hand side above, we see
+      \begin{equation*}
+        \begin{bmatrix} L_{11} & & \\ & L_{22} & \\ A_{31} U_{11}^{-1} & A_{32} U_{22}^{-1} & I \end{bmatrix} \begin{bmatrix} I & & \\ & I & \\ & & S_{33} \end{bmatrix} = \begin{bmatrix} L_{11} & & \\ & L_{22} & \\ A_{31} U_{11}^{-1} & A_{32} U_{22}^{-1} & S_{33} \end{bmatrix}.
+      \end{equation*}
+      Further, multiplying by the third matrix,
+      \begin{multline*}
+        \begin{bmatrix} L_{11} & & \\ & L_{22} & \\ A_{31} U_{11}^{-1} & A_{32} U_{22}^{-1} & S_{33} \end{bmatrix} \begin{bmatrix} U_{11} & & L_{11}^{-1} A_{13} \\ & U_{22} & L_{22}^{-1} A_{23} \\ & & I \end{bmatrix} \\
+        = \begin{bmatrix} L_{11} U_{11} & & A_{13} \\ & L_{22} U_{22} & A_{23} \\ A_{31} & A_{32} & A_{31} U_{11}^{-1} L_{11}^{-1} A_{13} + A_{32} U_{22}^{-1} L_{22}^{-1} A_{23} + S_{33} \end{bmatrix},
+      \end{multline*}
+      and so since $A_{11} = L_{11} U_{11}$ and $A_{22} = L_{22} U_{22}$, and hence $A_{11}^{-1} = U_{11}^{-1} L_{11}^{-1}$ and $A_{22}^{-1} = U_{22}^{-1} L_{22}^{-1}$, we have that the right-hand side of (\ref{eq:schur}) is equal to
+      \begin{equation*}
+        \begin{bmatrix} A_{11} & & A_{13} \\ & A_{22} & A_{23} \\ A_{31} & A_{32} & A_{31} A_{11}^{-1} A_{13} + A_{32} A_{22}^{-1} A_{23} + S_{33} \end{bmatrix}.
+      \end{equation*}
+      Hence, to achieve the desired factorization of $A$, it suffices to define
+      \begin{equation*}
+        S_{33} \coloneqq A_{33} - A_{31} A_{11}^{-1} A_{13} - A_{32} A_{22}^{-1} A_{23}.
+      \end{equation*}
+    \end{solution}
+    \item Suppose that the LU decomposition of $S_{33}$ is found: $S_{33} = L_{33} U_{33}$. Write out the LU decomposition of $A$.
+    \begin{solution}
+      Observe first that given the LU decomposition of $S_{33} = L_{33} U_{33}$,
+      \begin{equation*}
+        \begin{bmatrix} I & & \\ & I & \\ & & S_{33} \end{bmatrix} = \begin{bmatrix} I & & \\ & I & \\ & & L_{33} U_{33} \end{bmatrix} = \begin{bmatrix} I & & \\ & I & \\ & & L_{33} \end{bmatrix} \begin{bmatrix} I & & \\ & I & \\ & & U_{33} \end{bmatrix}
+      \end{equation*}
+      and so substituting into (\ref{eq:schur}), by item (a) we have that
+      \begin{equation*}
+        \begin{bmatrix} L_{11} & & \\ & L_{22} & \\ A_{31} U_{11}^{-1} & A_{32} U_{22}^{-1} & I \end{bmatrix} \begin{bmatrix} I & & \\ & I & \\ & & L_{33} \end{bmatrix} \begin{bmatrix} I & & \\ & I & \\ & & U_{33} \end{bmatrix} \begin{bmatrix} U_{11} & & L_{11}^{-1} A_{13} \\ & U_{22} & L_{22}^{-1} A_{23} \\ & & I \end{bmatrix}
+      \end{equation*}
+      is equal to $A$. Now isolating the left two matrices of the above, we see that
+      \begin{equation*}
+        \begin{bmatrix} L_{11} & & \\ & L_{22} & \\ A_{31} U_{11}^{-1} & A_{32} U_{22}^{-1} & I \end{bmatrix} \begin{bmatrix} I & & \\ & I & \\ & & L_{33} \end{bmatrix} = \begin{bmatrix} L_{11} & & \\ & L_{22} & \\ A_{31} U_{11}^{-1} & A_{32} U_{22}^{-1} & L_{33} \end{bmatrix}
+      \end{equation*}
+      is a lower triangular matrix, since $L_{11}$, $L_{22}$, and $L_{33}$ are each lower triangular. Likewise for the right two matrices,
+      \begin{equation*}
+        \begin{bmatrix} I & & \\ & I & \\ & & U_{33} \end{bmatrix} \begin{bmatrix} U_{11} & & L_{11}^{-1} A_{13} \\ & U_{22} & L_{22}^{-1} A_{23} \\ & & I \end{bmatrix} = \begin{bmatrix} U_{11} & & L_{11}^{-1} A_{13} \\ & U_{22} & L_{22}^{-1} A_{23} \\ & & U_{33} \end{bmatrix}
+      \end{equation*}
+      is an upper triangular matrix, since $U_{11}$, $U_{22}$, and $U_{33}$ are each upper triangular. Hence, the LU decomposition for $A$ is given by
+      \begin{equation*}
+        A = \begin{bmatrix} L_{11} & & \\ & L_{22} & \\ A_{31} U_{11}^{-1} & A_{32} U_{22}^{-1} & L_{33} \end{bmatrix} \begin{bmatrix} U_{11} & & L_{11}^{-1} A_{13} \\ & U_{22} & L_{22}^{-1} A_{23} \\ & & U_{33} \end{bmatrix}.
+      \end{equation*}
+    \end{solution}
+  \end{enumerate}
+
+  \question Modify the provided Matlab or Python code implementing the nested dissection algorithm to replace the LU factorizations with Cholesky factorizations. This modification will be specifically designed for symmetric positive definite matrices $A$. You can use a built-in function that computes Cholesky factorization.
+
+  Test it on the linear system from the problem with the maze from the previous
+  homework. Save the symmetric positive definite linear matrix, the corresponding
+  right-hand side, and the solution to it to a file and read this file in your new modified code. Paste your code to the pdf file with your homework. Report the norm of the difference between the solution computed by your code and the solution computed by a standard built-in linear solver.
+  \begin{solution}
+    TODO
+  \end{solution}
+
+  \question Let the input matrix $A$ be $n \times n$, symmetric positive definite. Estimate the number of flops in the resulting nested dissection with Cholesky factorizations. Do not count multiplications by permutation matrices as, if they were implemented in e.g. C, they would do only reindexing but involve no flops. Your answer should contain the exact coefficient next to the highest power of $N$. Terms with smaller powers of $N$ can be incorporated in $O(\cdot)$.
+  \begin{solution}
+    TODO
+  \end{solution}
+\end{questions}
+
+\end{document}

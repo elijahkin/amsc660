@@ -1,0 +1,201 @@
+\documentclass{../../../kin_math}
+
+\header{Elijah Kin}{Homework 5}{AMSC660}
+\headrule
+
+\begin{document}
+
+\begin{questions}
+  \question Calculate the number of flops required for computing a matrix inverse as a function of $n$ where $n \times n$ is the size of the matrix. Consider two algorithms.
+  \begin{enumerate}
+    \item \textbf{Algorithm 1.} Define an $n \times 2n$ matrix $M \coloneqq (A, I)$ where $I$ is the $n \times n$ identity matrix. Subject $M$ to row operations to transform it into a matrix of the form $(I, B)$. Then $B = A^{-1}$. Write this algorithm as a pseudocode. For simplicity assume that pivoting is not needed (anyway, row swaps do not involve flops). Calculate the number of flops. An answer of the form $W(n) = Cn^p + O(n^{p - 1})$ is good enough. You need to determine the constants $C$ and $p$.
+    \begin{solution}
+      We give the following implementation \href{https://github.com/elijahkin/school/blob/main/umd/amsc660/hw5/hw5.ipynb}{here}.
+      \begin{lstlisting}[language=python, numbers=left, xleftmargin=5em]
+def inv(A):
+  n = len(A)
+  A_aug = np.concatenate((A, np.identity(n)), axis=1)
+
+  for i in range(n):
+    scale = A_aug[i][i]
+    for j in range(2 * n):
+      A_aug[i][j] /= scale
+    for k in range(n):
+      scale2 = A_aug[k][i]
+      if k != i:
+        for j in range(2 * n):
+          A_aug[k][j] -= scale2 * A_aug[i][j]
+  return A_aug[:, n:]
+      \end{lstlisting}
+      Observe that line 13 contributes 2 flops, and runs $2n$ times. Hence, the line 9 loop contributes $4n^2$ flops. Further, since line 8 contributes 1 flops, and also runs $2n$ times. Then the line 5 loop requires $4n^2 + 2n$ flops per iteration and hence $4n^3 + 2n^2$ flops in total. Hence, we find that $C = 4$ and $p = 3$.
+    \end{solution}
+    \item \textbf{Algorithm 2.} Decompose $A$ to $A = LU$. The cost of this is $W_1(n) = \frac{2}{3} n^3 + O(n^2)$. Compute $L^{-1}$ and $U^{-1}$ and calculate $A^{-1} = U^{-1}L^{-1}$. Write this algorithm as a pseudocode. For simplicity assume that pivoting is not needed. Start it with calling the LU algorithm (you do not need to write a pseudocode for LU, just add its cost to your result). Calculate the number of flops. An answer should be of the form $W(n) = Cn^p + O(n^{p - 1})$. You need to determine the constants $C$ and $p$.
+    \begin{solution}
+      We give the following implementation \href{https://github.com/elijahkin/school/blob/main/umd/amsc660/hw5/hw5.ipynb}{here}.
+      \begin{lstlisting}[language=python, numbers=left, xleftmargin=5em]
+def tril_inv(L):
+  n = len(L)
+  L_inv = np.zeros((n, n))
+
+  for i in range(n):
+    L_inv[i][i] = 1 / L[i][i]
+    for j in range(i):
+      dot = 0
+      for k in range(j, i):
+        dot -= L[i][k] * L_inv[k][j]
+      dot /= L[i][i]
+      L_inv[i][j] = dot
+  return L_inv
+
+def triu_inv(U):
+  return tril_inv(U.T).T
+
+def tri_matmul(U, L):
+  n = len(U)
+  A = np.zeros((n, n))
+
+  for i in range(n):
+    for j in range(n):
+      dot = 0
+      for k in range(max(i, j), n):
+        dot += U[i][k] * L[k][j]
+      A[i][j] = dot
+  return A
+
+def inv_lu(A):
+  _, L, U = scipy.linalg.lu(A)
+  return tri_matmul(triu_inv(U), tril_inv(L))
+      \end{lstlisting}
+      We first compute the number of flops required by \texttt{tril\_inv}. Line 10 contributes 2 flops and line 11 contributes 1; hence, the line 7 loop contributes $2(i - j) + 1$ flops per iteration and hence
+      \begin{equation*}
+        \sum_{j = 1}^i 2(i - j) + 1 = 2i^2 + i - 2\sum_{j = 1}^i j = 2i^2 + i - i(i + 1) = i^2
+      \end{equation*}
+      flops in total, so \texttt{tril\_inv} on the whole requires
+      \begin{equation*}
+        \sum_{i = 1}^n 1 + i^2 = n + \frac{1}{6}n(n + 1)(2n + 1) = \frac{1}{3}n^3 + \frac{1}{2}n^2 + \frac{7}{6}n
+      \end{equation*}
+      flops. It is clear that \texttt{triu\_inv} will require the same number. It remains to compute the number of flops for \texttt{tri\_matmul}, that is,
+      \begin{equation*}
+        \sum_{i = 1}^n \sum_{j = 1}^n \sum_{k = \max(i, j)}^n 2 = 2 \sum_{i = 1}^n \sum_{j = 1}^n (n - \max(i, j) + 1) = 2n^3 + 2n^2 - 2 \sum_{i = 1}^n \sum_{j = 1}^n \max(i, j)
+      \end{equation*}
+      noting that by properties of triangle numbers,
+      \begin{multline*}
+        2 \sum_{i = 1}^n \sum_{j = 1}^n \max(i, j) = 2 \sum_{i = 1}^n \left(\sum_{j = 1}^i i + \sum_{j = i + 1}^n j\right) = 2 \sum_{i = 1}^n \left(i^2 + \sum_{j = 1}^n j - \sum_{j = 1}^i j\right) \\
+        = \dots = \frac{1}{3}n(n + 1)(4n - 1) = \frac{4}{3}n^3 + n^2 - \frac{1}{3}n
+      \end{multline*}
+      and hence \texttt{tri\_matmul} requires
+      \begin{equation*}
+        2n^3 + 2n^2 - \left(\frac{4}{3}n^3 + n^2 - \frac{1}{3}n\right) = \frac{2}{3}n^3 + n^2 + \frac{1}{3}n
+      \end{equation*}
+      flops, and so the whole procedure to decompose $A = LU$, find $L^{-1}$ and $U^{-1}$, and multiply $U^{-1}L^{-1}$ takes a total of
+      \begin{equation*}
+        \frac{2}{3}n^3 + 2\left(\frac{1}{3}n^3\right) + \frac{2}{3}n^3 + O(n^2) = 2n^3 + O(n^2)
+      \end{equation*}
+      flops. Hence, we find that $C = 2$ and $p = 3$ by this method.
+    \end{solution}
+  \end{enumerate}
+
+  \question
+  \begin{enumerate}
+    \item Consider the set $\mathcal{L}$ of all $n \times n$ lower-triangular matrices with positive diagonal entries.
+    \begin{enumerate}[label=\roman*.]
+      \item Prove that the product of any two matrices in $\mathcal{L}$ is also in $\mathcal{L}$.
+      \item Prove that the inverse of any matrix in $\mathcal{L}$ is also in $\mathcal{L}$.
+    \end{enumerate}
+    This means that the set of all $n \times n$ lower-triangular matrices with positive diagonal entries forms a group with respect to matrix multiplication.
+    \begin{solution}
+      First let $A, B \in \mathcal{L}$ and consider
+      \begin{equation*}
+        (AB)_{ij} = \sum_{k = 1}^n a_{ik}b_{kj}.
+      \end{equation*}
+      But since $A$ is lower-triangular, then $a_{ik} = 0$ when $k > i$ and similarly $b_{kj} = 0$ when $j > k$, and so
+      \begin{equation}
+        \label{eq:lower}
+        (AB)_{ij} = \sum_{k = 1}^n a_{ik}b_{kj} = \sum_{k = j}^i a_{ik}b_{kj}.
+      \end{equation}
+      Hence, we see that if $j > i$, this sum is empty, and so $(AB)_{ij} = 0$, meaning $AB$ is lower-triangular. It remains to show the diagonal entries of $AB$ are positive; taking $j = i$ in (\ref{eq:lower}), we see that
+      \begin{equation*}
+        (AB)_{ii} = \sum_{k = i}^i a_{ik}b_{ki} = a_{ii}b_{ii}
+      \end{equation*}
+      and so since $a_{ii}, b_{ii} > 0$ since $A, B \in \mathcal{L}$ it follows that $(AB)_{ii} > 0$, and hence $AB \in \mathcal{L}$.
+
+      It remains to show that $\mathcal{L}$ is closed under inverses for all $n \in \mathbb{N}$. We proceed by induction on $n$. The case for $n = 1$ is clear, since $\begin{bmatrix} a \end{bmatrix}^{-1} = \begin{bmatrix} a^{-1} \end{bmatrix}$, which is trivially lower-triangular, and $a^{-1} > 0$ if $a > 0$. Now suppose the hypothesis holds for some $n \in \mathbb{N}$, and let $A$ be an $(n + 1) \times (n + 1)$ lower-triangular matrix with positive diagonal entries.
+
+      We can then write $A$ in block form like so
+      \begin{equation*}
+        A = \begin{bmatrix} \tilde{A} & \textbf{0} \\ \textbf{b}^\top & c \end{bmatrix}
+      \end{equation*}
+      and since $A$ is lower-triangular with positive diagonal entries, $\det(A) \neq 0$, so $A$ is invertible. Let us write $A^{-1}$ in block form as well
+      \begin{equation*}
+        A^{-1} = \begin{bmatrix} \tilde{D} & \textbf{e} \\ \textbf{f}^\top & g \end{bmatrix}.
+      \end{equation*}
+      It now suffices to show that $\tilde{D}$ is lower-triangular and $\textbf{e} = \textbf{0}$; indeed
+      \begin{equation*}
+        \begin{bmatrix} I_n & \textbf{0} \\ \textbf{0}^\top & 1 \end{bmatrix} = I_{n + 1} = AA^{-1} = \begin{bmatrix} \tilde{A} & \textbf{0} \\ \textbf{b}^\top & c \end{bmatrix} \begin{bmatrix} \tilde{D} & \textbf{e} \\ \textbf{f}^\top & g \end{bmatrix} = \begin{bmatrix} \tilde{A} \tilde{D} & \tilde{A} \textbf{e} \\ \textbf{b}^\top \tilde{D} + c \textbf{f}^\top & \textbf{b}^\top \textbf{e} + cg \end{bmatrix}
+      \end{equation*}
+      so in particular $\tilde{D} = \tilde{A}^{-1}$ and hence lower-triangular with diagonal entries by the inductive hypothesis. Further, we have that $\tilde{A} \textbf{e} = \textbf{0}$; Since $\tilde{A}$ is invertible, then it must be that $\textbf{e} = \textbf{0}$, and hence $A^{-1}$ is lower-triangular.
+
+      Finally, to conclude the diagonal entries of $A^{-1}$ are positive, we need only show that $g > 0$. And indeed, since $\textbf{e} = \textbf{0}$ and $c > 0$ by assumption,
+      \begin{equation*}
+        g = \frac{1 - \textbf{b}^\top \textbf{e}}{c} = \frac{1}{c} > 0
+      \end{equation*}
+      and hence $A^{-1}$ is lower-triangular with positive diagonal entries. By the principle of induction, $\mathcal{L}$ is closed under inverses for any $n \in \mathbb{N}$.
+    \end{solution}
+    \item Prove that the Cholesky decomposition for any $n \times n$ symmetric positive definite matrix is unique. \emph{Hint. Proceed from converse. Assume that there are two Cholesky decompositions $A = LL^\top$ and $A = MM^\top$. Show that then $M^{-1}LL^\top M^{-\top} = I$. Conclude that $M^{-1}L$ must be orthogonal. Then use item (a) of this problem to complete the argument.}
+    \begin{solution}
+      Toward a contradiction, suppose for some $n \times n$ symmetric positive definite matrix $A$ we have two Cholesky decompositions $A = LL^\top$ and $A = MM^\top$.
+
+      Then clearly $LL^\top = MM^\top$, and so by multiplying by $M^{-1}$ on the left and by $M^{-\top}$ on the right, we obtain
+      \begin{equation*}
+        M^{-1}LL^\top M^{-\top} = I.
+      \end{equation*}
+      But now observe that
+      \begin{equation*}
+        M^{-1}LL^\top M^{-\top} = M^{-1}L(M^{-1}L)^\top
+      \end{equation*}
+      and hence $M^{-1}L(M^{-1}L)^\top = I$, meaning $M^{-1}L$ is orthogonal.
+
+      By item (a), we also have that $M^{-1}L$ is lower-triangular with positive diagonal entries (since $L$ and $M$ are each as such). Further, its inverse $(M^{-1} L)^{-1} = (M^{-1} L)^\top$ is also lower-triangular with positive diagonal entries. Then since both $M^{-1}L$ and $(M^{-1}L)^\top$ are lower-triangular, $M^{-1}L$ must be diagonal.
+
+      Finally, since it is orthogonal, its diagonal entries must satisfy $a_{jj}^2 = 1$. Since we know its diagonal entries are positive, this implies $a_{jj} = 1$, so $M^{-1}L = I$ and multiplying on the left by $M$, we find $L = M$, hence the Cholesky decomposition is unique.
+    \end{solution}
+  \end{enumerate}
+
+  \question The Cholesky algorithm is the cheapest way to check if a symmetric matrix is positive definite.
+  \begin{enumerate}
+    \item Program the Cholesky algorithm. If any $L_{jj}$ turns out to be either complex or zero, make it terminate with a message: ``The matrix is not positive definite''.
+    \begin{solution}
+      We give the following implementation of the Cholesky algorithm \href{https://github.com/elijahkin/school/blob/main/umd/amsc660/hw5/hw5.ipynb}{here}.
+      \begin{lstlisting}[language=python, numbers=left, xleftmargin=5em]
+def cholesky(A):
+  n = len(A)
+  L = np.zeros((n, n))
+
+  for j in range(n):
+    L[j][j] = A[j][j]
+    for k in range(j):
+      L[j][j] -= L[j][k] ** 2
+    if L[j][j] <= 0:
+      print("The matrix is not positive definite")
+      return None
+    L[j][j] = np.sqrt(L[j][j])
+    for i in range(j + 1, n):
+      L[i][j] = A[i][j]
+      for k in range(j):
+        L[i][j] -= L[i][k] * L[j][k]
+      L[i][j] /= L[j][j]
+  return L
+      \end{lstlisting}
+    \end{solution}
+    \item Generate a symmetric $100 \times 100$ matrix as follows: generate a matrix $\tilde{A}$ with entries being random numbers uniformly distributed in $(0, 1)$ and define $A \coloneqq \tilde{A} + \tilde{A}^\top$. Use the Cholesky algorithm to check if $A$ is symmetric positive definite. Compute the eigenvalues of $A$ using a standard command (e.g. \texttt{eig} in MATLAB), find minimal eigenvalue, and check if the conclusion of your Cholesky-based test for positive definiteness is correct. If $A$ is positive definite, compute its Cholesky factor using a standard command (e.g. see this \href{https://www.mathworks.com/help/matlab/ref/chol.html}{help page for MATLAB}) and print the norm of the difference of the Cholesky factors computed by your routine and by the standard one.
+    \begin{solution}
+      Our algorithm from item (a) returns ``The matrix is not positive definite'' and so we expect that the minimal eigenvalue $\lambda_\text{min}$ of $A$ should be such that $\lambda_\text{min} \leq 0$. Indeed, we find that $\lambda_\text{min} \approx -7.764$.
+    \end{solution}
+    \item Repeat item (b) with $A$ defined by $A = \tilde{A}^\top \tilde{A}$. The point of this task is to check that your Cholesky routine works correctly.
+    \begin{solution}
+      Our algorithm from item (a) returns a Cholesky factor $L$ suggesting $A$ is symmetric positive definite. To verify our algorithm is correct, we also compute $L_\text{std}$ via \texttt{np.linalg.cholesky} and find that $\lVert L - L_\text{std} \rVert \approx 1.128 \cdot 10^{-12}$.
+    \end{solution}
+  \end{enumerate}
+\end{questions}
+
+\end{document}
