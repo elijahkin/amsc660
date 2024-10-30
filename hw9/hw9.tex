@@ -1,4 +1,4 @@
-\documentclass{../../../kin_math}
+\documentclass{../kin_math}
 
 \header{Elijah Kin}{Homework 9}{AMSC660}
 \headrule
@@ -68,7 +68,29 @@
   homework. Save the symmetric positive definite linear matrix, the corresponding
   right-hand side, and the solution to it to a file and read this file in your new modified code. Paste your code to the pdf file with your homework. Report the norm of the difference between the solution computed by your code and the solution computed by a standard built-in linear solver.
   \begin{solution}
-    TODO
+    We use the given MyDissection routine but alter the problem set up to use data from the previous homework. The complete code can be found \href{https://github.com/elijahkin/amsc660/blob/main/hw9/hw9.ipynb}{here}.
+    \begin{lstlisting}[language=Python]
+      nx = 20
+      ny = 20
+      data = np.load('hw8_data.npz', allow_pickle=True)
+      L_symm, b_symm, y = data.values()
+
+      A = np.pad(-L_symm, 1)
+      A[0, 0] = 1
+      A[-1, -1] = 1
+
+      b = np.zeros((nx * ny, 1))
+      b[1:-1] = -b_symm
+      b[-1] = 1
+
+      sol = np.zeros((nx * ny, 1))
+      sol[1:-1] = np.linalg.solve(-L_symm, -b_symm)
+      sol[-1] = 1
+
+      level = 0
+      [P, L, U, A] = MyDissection(A, nx, ny, level)
+    \end{lstlisting}
+    The norm between the solution computed by this code and the standard linear solver \texttt{np.linalg.solve} is approximately $3.89 \cdot 10^{-12}$.
   \end{solution}
 
   \question Let the input matrix $A$ be $n \times n$, symmetric positive definite. Estimate the number of flops in the resulting nested dissection with Cholesky factorizations. Do not count multiplications by permutation matrices as, if they were implemented in e.g. C, they would do only reindexing but involve no flops. Your answer should contain the exact coefficient next to the highest power of $N$. Terms with smaller powers of $N$ can be incorporated in $O(\cdot)$.
