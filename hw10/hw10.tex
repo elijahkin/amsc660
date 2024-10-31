@@ -1,4 +1,4 @@
-\documentclass{../../../kin_math}
+\documentclass{../kin_math}
 
 \header{Elijah Kin}{Homework 10}{AMSC660}
 \headrule
@@ -48,15 +48,9 @@
   \begin{center}
     \includegraphics[scale=0.2]{minima.png}
   \end{center}
-  Add the following search directions to the provided Matlab code \texttt{LJ\_line\_search} (or to the Python code that I will provide soon):
-  \begin{itemize}
-    \item BFGS ([NW], page 24),
-    \item (FRCG) Fletcher-Reeves nonlinear CG ([NW], page 121),
-    \item (PRCG) Polak-Ribiere nonlinear CG ([NW], page 122, eq. (5.45)).
-  \end{itemize}
-  Note that it is recommended to reset the matrix $B_k$ in the BFGS method to identity every $m$ steps. Try $m = 5$ and $m = 20$.
+  Add the BFGS search directions to the provided Matlab or Python codes. It is recommended to reset the matrix $B_k$ in the BFGS method to the identity every $m$th step. Try $m = 5$ and $m = 20$.
 
-  Compare the performance of the five algorithms, the three algorithms above, steepest descent, and Newton's (already encoded) in terms of the number of iterations required to achieve convergence and by plotting the graph of $f$ and $\lVert \nabla f \rVert$ against the iteration number for each test case. Do it for each of the four initial conditions approximating the four local minima and ten random initial conditions.
+  Compare the performance of the three algorithms, the steepest descent, Newton's (already encoded), and BFGS in terms of the number of iterations required to achieve convergence and by plotting the graph of $f$ and $\lVert \nabla f \rVert$ against the iteration number for each test case. Do it for each of the four initial conditions approximating the four local minima and ten random initial conditions.
   \begin{solution}
     TODO
   \end{solution}
@@ -72,34 +66,11 @@
     \begin{solution}
       TODO
     \end{solution}
-    \item Program the steepest descent, FRCG, PRCG, Newton's, and BFGS algorithms using the backtracking line search. Use them to minimize the Rosenbrock function (\ref{eq:rosenbrock}). First start with the initial guess $(1.2, 1.2)$ and then with the more difficult one $(-1.2, 1)$. Set the initial step length $\alpha_0 = 1$ and plot the step length $\alpha_k$ versus $k$ for each of the methods.
+    \item Program the steepest descent, Newton's, and BFGS algorithms using the backtracking line search. Use them to minimize the Rosenbrock function (\ref{eq:rosenbrock}). First start with the initial guess $(1.2, 1.2)$ and then with the more difficult one $(-1.2, 1)$. Set the initial step length $\alpha_0 = 1$ and plot the step length $\alpha_k$ versus $k$ for each of the methods.
 
     Plot the level sets of the Rosenbrock function using the command \texttt{contour} and plot the iterations for each method over it.
 
     Plot $\lVert (x_k, y_k) - (x^*, y^*) \rVert$ versus $k$ in the logarithmic scale along the $y$-axis for each method. Do you observe a superlinear convergence? Compare the performance of the methods.
-    \begin{solution}
-      TODO
-    \end{solution}
-  \end{enumerate}
-
-  \question
-  \begin{enumerate}
-    \item Let $\langle \cdot, \cdot \rangle$ be an inner product defined on a vector space $V$. Prove the Cauchy-Schwarz inequality
-    \begin{equation}
-      |\langle u, v \rangle|^2 \leq \langle u, u \rangle \langle v, v \rangle \quad \forall u, v \in V.
-    \end{equation}
-    \emph{Hint: Consider the quadratic polynomial}
-    \begin{equation}
-      p(t) = \langle u + tv, u + tv \rangle, \quad t \in \mathbb{R} \text{ (or $\mathbb{C}$)}.
-    \end{equation}
-    \emph{Can this polynomial take negative values? Use your answer to conclude what should be the sign of the discriminant if you set $p = 0$.}
-    \begin{solution}
-      TODO
-    \end{solution}
-    \item Let $B$ be a real symmetric positive definite $n \times n$ matrix. Use the Cauchy-Schwarz inequality to prove that
-    \begin{equation}
-      (g^\top B g)(g^\top B^{-1} g) \geq (g^\top g)^2 \quad \forall g \in \mathbb{R}^n.
-    \end{equation}
     \begin{solution}
       TODO
     \end{solution}
