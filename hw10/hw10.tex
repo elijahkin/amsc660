@@ -16,6 +16,14 @@
   \end{equation*}
   Also, bound $\theta$ away from zero in terms of the condition number of $B$, i.e., $\kappa(B) = \lVert B \rVert \lVert B^{-1} \rVert$.
   \begin{solution}
+    Taking the gradient of $m$, we find
+    \begin{equation*}
+      \nabla m(p) = \nabla f(x) + B p.
+    \end{equation*}
+    Hence, setting this gradient equal to 0 and solving for $p$ yields the direction
+    \begin{equation*}
+      p = -B^{-1} \nabla f(x).
+    \end{equation*}
     TODO
   \end{solution}
 
@@ -35,7 +43,28 @@
     \end{solution}
     \item Let $B_k$ be symmetric positive definite (SPD). Prove that then $B_{k + 1}$ is also SPD, i.e., for any $z \in \mathbb{R}^n \setminus \{0\}$, $z^\top B_{k + 1} z > 0$. You can use the previous item of this problem and \href{https://en.wikipedia.org/wiki/Cauchy%E2%80%93Schwarz_inequality}{the Cauchy-Schwarz inequality} for the $B_k$-inner product $(u, v)_{B_k} \coloneqq v^\top B_k u$.
     \begin{solution}
-      TODO
+      The Cauchy-Schwarz inequality for the $B_k$-inner product asserts that
+      \begin{equation*}
+        v^\top B_k u u^\top B_k v = (u, v)_{B_k} (v, u)_{B_k} = (u, v)_{B_k}^2 \leq (u, u)_{B_k} (v, v)_{B_k} = u^\top B_k u v^\top B_k v.
+      \end{equation*}
+      Now let $z \in \mathbb{R}^n \setminus \{0\}$ and observe that by the definition of $B_{k + 1}$,
+      \begin{equation*}
+        z^\top B_{k + 1} z = z^\top B_k z - \frac{z^\top B_k s_k s_k^\top B_k z}{s_k^\top B_k s_k} + \frac{z^\top  y_k y_k^\top z}{y_k^\top s_k}.
+      \end{equation*}
+      Then taking $v = z$ and $u = s_k$ in the Cauchy-Schwarz inequality, we see that
+      \begin{equation*}
+        z^\top B_k s_k s_k^\top B_k z \leq s_k^\top B_k s_k z^\top B_k z
+      \end{equation*}
+      and hence
+      \begin{multline*}
+        z^\top B_{k + 1} z \geq z^\top B_k z - \frac{s_k^\top B_k s_k z^\top B_k z}{s_k^\top B_k s_k} + \frac{z^\top  y_k y_k^\top z}{y_k^\top s_k} \\
+        = z^\top B_k z - z^\top B_k z + \frac{z^\top  y_k y_k^\top z}{y_k^\top s_k} = \frac{z^\top  y_k y_k^\top z}{y_k^\top s_k} = \frac{(y_k^\top z)^\top (y_k^\top z)}{y_k^\top s_k} = \frac{\lVert y_k^\top z \rVert_2^2}{y_k^\top s_k}.
+      \end{multline*}
+      Finally, note that $y_k^\top s_k > 0$ by item (a), and $\lVert y_k^\top z \rVert_2 > 0$ as a norm, since $z \neq 0$. Therefore, we have that
+      \begin{equation*}
+        z^\top B_{k + 1} z \geq \frac{\lVert y_k^\top z \rVert_2^2}{y_k^\top s_k} > 0
+      \end{equation*}
+      for all $z \in \mathbb{R}^n \setminus \{0\}$, meaning $B_{k + 1}$ is also symmetric positive definite.
     \end{solution}
   \end{enumerate}
 
@@ -43,10 +72,9 @@
   \begin{equation}
     f = 4 \sum_{i = 2}^7 \sum_{j = 1}^i \left(r_{ij}^{-12} - r_{ij}^{-6}\right), \quad r_{ij} \coloneqq \sqrt{(x_i - x_j)^2 + (y_i - y_j)^2 + (z_i - z_j)^2}.
   \end{equation}
-  \newpage
   It is known that $\text{LJ}_7$ has \href{https://doi.org/10.1063/1.475008}{four local energy minima}:
   \begin{center}
-    \includegraphics[scale=0.2]{minima.png}
+    \includegraphics[scale=0.25]{minima.png}
   \end{center}
   Add the BFGS search directions to the provided Matlab or Python codes. It is recommended to reset the matrix $B_k$ in the BFGS method to the identity every $m$th step. Try $m = 5$ and $m = 20$.
 
@@ -64,6 +92,28 @@
     \end{equation}
     Show that $(1, 1)$ is the only local minimizer, and that the Hessian is positive definite at it.
     \begin{solution}
+      The first-order partial derivatives of the Rosenbrock function are
+      \begin{equation*}
+        \frac{\partial f}{\partial x} = -400x(y - x^2) - 2(1 - x) \text{ and } \frac{\partial f}{\partial y} = 200(y - x^2),
+      \end{equation*}
+      hence its gradient is given by
+      \begin{equation*}
+        \nabla f(x, y) = \begin{bmatrix} -400x(y - x^2) - 2(1 - x) \\ 200(y - x^2) \end{bmatrix}.
+      \end{equation*}
+      The second-order partial derivatives of the Rosenbrock function are
+      \begin{equation*}
+        \frac{\partial^2 f}{\partial x^2} = -400(y - x^2) + 800x^2 + 2 \text{ and } \frac{\partial^2 f}{\partial x \partial y} = -400x
+      \end{equation*}
+      and
+      \begin{equation*}
+        \frac{\partial^2 f}{\partial y \partial x} = -400x \text{ and } \frac{\partial^2 f}{\partial y^2} = 200
+      \end{equation*}
+      so its Hessian is
+      \begin{equation*}
+        \begin{bmatrix}
+          -400(y - x^2) + 800x^2 + 2 & -400x \\ -400x & 200
+        \end{bmatrix}.
+      \end{equation*}
       TODO
     \end{solution}
     \item Program the steepest descent, Newton's, and BFGS algorithms using the backtracking line search. Use them to minimize the Rosenbrock function (\ref{eq:rosenbrock}). First start with the initial guess $(1.2, 1.2)$ and then with the more difficult one $(-1.2, 1)$. Set the initial step length $\alpha_0 = 1$ and plot the step length $\alpha_k$ versus $k$ for each of the methods.
