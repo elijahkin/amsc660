@@ -54,7 +54,7 @@ def LJpot(x): # Lennard-Jones potential. Input:3*Na - 6 vector
 def LJgrad(x): # Lennard-Jones gradient. Input: 3*Na - 6 vector
     x = LJvector2array(x)
     Na = np.size(x, axis=1)
-    r2 = np.zeros((Na,Na)) # matrix of distances squared
+    r2 = np.zeros((Na, Na)) # matrix of distances squared
     for k in range(Na):
         r2[k,:] = (x[0, :] - x[0, k])**2 + (x[1, :] - x[1, k])**2 + (x[2, :] - x[2, k])**2
         r2[k, k] = 1
@@ -173,8 +173,8 @@ def initial_configuration(model, Na, rstar):
         xyz[0, 3] = r1 * np.cos(pp)
         xyz[1, 3] = r1 * np.sin(pp)
         xyz[2, 3] = np.sqrt(2 / 3) - np.sin(beta)
-        xyz[0, 4] = r1*np.cos(pp + p3)
-        xyz[1, 4] = r1*np.sin(pp + p3)
+        xyz[0, 4] = r1 * np.cos(pp + p3)
+        xyz[1, 4] = r1 * np.sin(pp + p3)
         xyz[2, 4] = -xyz[2, 3]
         xyz[2, 5] = np.sqrt(2 / 3)
         xyz[2, 6] = -np.sqrt(2 / 3)
@@ -215,8 +215,8 @@ def make_sphere(r):
     u = np.linspace(0, 2 * np.pi, 100)
     v = np.linspace(0, np.pi, 100)
     r = 0.5 * 2**(1 / 6)
-    x = r*np.outer(np.cos(u), np.sin(v))
-    y = r*np.outer(np.sin(u), np.sin(v))
+    x = r * np.outer(np.cos(u), np.sin(v))
+    y = r * np.outer(np.sin(u), np.sin(v))
     z = np.outer(np.ones(np.size(u)), np.cos(v))
     return x, y, z
 
@@ -224,7 +224,7 @@ def drawconf(xyz, rstar):
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     Na = np.size(xyz, axis=1)
-    xs,ys,zs = make_sphere(rstar)
+    xs, ys, zs = make_sphere(rstar)
     for j in range(Na):
         x = xs + xyz[0, j]
         y = ys + xyz[1, j]
