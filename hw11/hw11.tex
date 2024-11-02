@@ -28,6 +28,45 @@
       TODO
     \end{solution}
   \end{enumerate}
+
+  \question Consider Newton’s algorithm for solving the trust-region subproblem ([NW], Algorithm 4.3, page 87). Prove that Eq. (4.43) is equivalent to Eq. (4.44) in [NW], i.e., that for
+  \begin{equation*}
+    \phi(\lambda) = \frac{1}{\Delta} - \left[\sum_{j = 1}^n \frac{(q_j g)^2}{(\lambda_j + \lambda)^2}\right]^{-1 / 2},
+  \end{equation*}
+  where $(q_j, \lambda_j)$ are the eigenpairs of $B$, the Newton iteration
+  \begin{equation*}
+    \lambda^{(l + 1)} = \lambda^{(l)} - \frac{\phi(\lambda^{(l)})}{\phi'(\lambda^{(l)})}
+  \end{equation*}
+  is given by
+  \begin{equation*}
+    \lambda^{(l + 1)} = \lambda^{(l)} + \left(\frac{\lVert p_l \rVert}{\lVert z_l \rVert}\right)^2 \frac{\lVert p_l \rVert - \Delta}{\Delta},
+  \end{equation*}
+  where $z_l = L^{-1} p_l$, $p_l = -(B + \lambda^{(l)} I)^{-1} g$, and $L$ is the Cholesky factor of $B + \lambda^{(l)} I$, i.e., $B + \lambda^{(l)} I = LL^\top$. Note: $R = L^\top$ in Algorithm 4.3.
+
+  \emph{Hint: You will need to compute the derivative of $\phi$ and express it in terms of $\lVert p_l \rVert$ and $\lVert (B + \lambda^{(l)} I)^{-1} g \rVert^2$. Also, you will need to use the fact that the Cholesky factor of any SPD matrix $M$ is related to $M^{1 / 2}$ via an orthogonal transformation.}
+  \begin{solution}
+    TODO
+  \end{solution}
+
+  \question Consider the problem of finding local energy minima of the $\text{LJ}_7$ as in Problem 3 of HW9. Consider the same set of initial conditions: four initial conditions close to its four local minima, and ten random initial conditions.
+
+  Implement the BFGS trust-region method with the dogleg subproblem solver. Compare its performance with the trust-region Newton with the exact subproblem solver implemented in the provided code by creating a table with the number of iterations required to achieve convergence and plotting the graph of $f$ and $\lVert \nabla f \rVert$ against the iteration number for each test case (the four initial conditions close to the minima and one representative random configuration initial condition). Do it for each of the four initial conditions approximating the four local minima and ten random initial conditions. The set of figures to include is the same as for Problem 3 in HW9.
+  
+  Comment on the performance of trust-region methods compared to the performance of line-search methods.
+  \begin{solution}
+    TODO
+  \end{solution}
+
+  \question (Approx. Problem 3.1 from [NW]) Write a code that applies the two algorithms from the previous problem (the trust-region BFGS with the dogleg solver and the trust-region Newton with the exact subspace solver) to the Rosenbrock function as in Problem 4 of HW9:
+  \begin{equation}
+    f(x, y) = 100(y - x^2)^2 + (1 - x)^2.
+  \end{equation}
+  Experiment with the same two initial conditions: $(1.2, 1.2)$ and $(-1.2, 1)$.
+
+  Plot the level sets of the Rosenbrock function using the command contour and plot the iterations for each method over it. Plot $\lVert (x_k, y_k) - (x^*, y^*) \rVert$ versus $k$ in the logarithmic scale along the $y$-axis for each method. Compare the performance of the methods.
+  \begin{solution}
+    TODO
+  \end{solution}
 \end{questions}
 
 \end{document}
