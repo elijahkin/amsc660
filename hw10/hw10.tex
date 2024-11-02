@@ -22,8 +22,22 @@
     \end{equation*}
     Hence, setting this gradient equal to 0 and solving for $p$ yields the direction
     \begin{equation*}
-      p = -B^{-1} \nabla f(x).
+      p = -B^{-1} \nabla f(x)
     \end{equation*}
+    and so
+    \begin{equation*}
+      \cos \theta \coloneqq - \frac{\nabla f(x)^\top p}{\lVert \nabla f(x) \rVert \lVert p \rVert} = \frac{\nabla f(x)^\top B^{-1} \nabla f(x)}{\lVert \nabla f(x) \rVert \lVert p \rVert}.
+    \end{equation*}
+    But now note that since $B$ is symmetric positive definite, so is $B^{-1}$, and hence
+    \begin{equation*}
+      \nabla f(x)^\top B^{-1} \nabla f(x) > 0
+    \end{equation*}
+    assuming $\nabla f(x) \neq 0$. As norms, we also have that $\lVert \nabla f(x) \rVert, \lVert p \rVert > 0$ and hence
+    \begin{equation*}
+      \cos \theta = \frac{\nabla f(x)^\top B^{-1} \nabla f(x)}{\lVert \nabla f(x) \rVert \lVert p \rVert} > 0
+    \end{equation*}
+    as desired.
+
     TODO
   \end{solution}
 
@@ -39,7 +53,28 @@
     \end{equation*}
     implies that $y_k^\top s_k > 0$.
     \begin{solution}
-      TODO
+      Recalling the definitions of $s_k$ and $y_k$,
+      \begin{equation*}
+        s_k \coloneqq x_{k + 1} - x_k \text{ and } y_k \coloneqq \nabla f_{k + 1} - \nabla f_k.
+      \end{equation*}
+      In particular, since $x_{k + 1} = x_k + \alpha_k p_k$, we can write $s_k = \alpha_k p_k$ for some $\alpha_k > 0$. Therefore, we have that
+      \begin{multline*}
+        y_k^\top s_k = \alpha_k y_k^\top p_k = \alpha_k (\nabla f_{k + 1} - \nabla f_k)^\top p_k = \alpha_k (\nabla f_{k + 1}^\top - \nabla f_k^\top) p_k \\
+        = \alpha_k (\nabla f_{k + 1}^\top p_k - \nabla f_k^\top p_k).
+      \end{multline*}
+      Further, from Wolfe's condition 2, there exists some $c_2 \in (0, 1)$ such that
+      \begin{equation*}
+        \nabla f_{k + 1}^\top p_k \geq c_2 \nabla f_k^\top p_k
+      \end{equation*}
+      and hence
+      \begin{equation*}
+        y_k^\top s_k = \alpha_k (\nabla f_{k + 1}^\top p_k - \nabla f_k^\top p_k) \geq \alpha_k (c_2 \nabla f_k^\top p_k - \nabla f_k^\top p_k) = \alpha_k (c_2 - 1) \nabla f_k^\top p_k.
+      \end{equation*}
+      Finally, since $p_k$ is a descent direction, $\nabla f_k^\top p_k < 0$ and $(c_2 - 1) < 0$ since $c_2 \in (0, 1)$, therefore $(c_2 - 1) \nabla f_k^\top p_k > 0$ and so
+      \begin{equation*}
+        y_k^\top s_k \geq \alpha_k (c_2 - 1) \nabla f_k^\top p_k > 0
+      \end{equation*}
+      as desired.
     \end{solution}
     \item Let $B_k$ be symmetric positive definite (SPD). Prove that then $B_{k + 1}$ is also SPD, i.e., for any $z \in \mathbb{R}^n \setminus \{0\}$, $z^\top B_{k + 1} z > 0$. You can use the previous item of this problem and \href{https://en.wikipedia.org/wiki/Cauchy%E2%80%93Schwarz_inequality}{the Cauchy-Schwarz inequality} for the $B_k$-inner product $(u, v)_{B_k} \coloneqq v^\top B_k u$.
     \begin{solution}
@@ -58,11 +93,11 @@
       and hence
       \begin{multline*}
         z^\top B_{k + 1} z \geq z^\top B_k z - \frac{s_k^\top B_k s_k z^\top B_k z}{s_k^\top B_k s_k} + \frac{z^\top  y_k y_k^\top z}{y_k^\top s_k} \\
-        = z^\top B_k z - z^\top B_k z + \frac{z^\top  y_k y_k^\top z}{y_k^\top s_k} = \frac{z^\top  y_k y_k^\top z}{y_k^\top s_k} = \frac{(y_k^\top z)^\top (y_k^\top z)}{y_k^\top s_k} = \frac{\lVert y_k^\top z \rVert_2^2}{y_k^\top s_k}.
+        = z^\top B_k z - z^\top B_k z + \frac{z^\top  y_k y_k^\top z}{y_k^\top s_k} = \frac{z^\top  y_k y_k^\top z}{y_k^\top s_k} = \frac{(y_k^\top z)^2}{y_k^\top s_k}.
       \end{multline*}
-      Finally, note that $y_k^\top s_k > 0$ by item (a), and $\lVert y_k^\top z \rVert_2 > 0$ as a norm, since $z \neq 0$. Therefore, we have that
+      Finally, note that $y_k^\top s_k > 0$ by item (a), and TODO. Therefore, we have that
       \begin{equation*}
-        z^\top B_{k + 1} z \geq \frac{\lVert y_k^\top z \rVert_2^2}{y_k^\top s_k} > 0
+        z^\top B_{k + 1} z \geq \frac{(y_k^\top z)^2}{y_k^\top s_k} > 0
       \end{equation*}
       for all $z \in \mathbb{R}^n \setminus \{0\}$, meaning $B_{k + 1}$ is also symmetric positive definite.
     \end{solution}
