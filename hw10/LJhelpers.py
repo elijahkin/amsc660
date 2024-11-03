@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
 from matplotlib import cm
 
-# The Lennard-Jones potential. its gradient, and its Hessian
+# The Lennard-Jones potential, its gradient, and its Hessian
 
 def LJ(x): # Lennard-Jones potential. Input: 3-by-Na array
     Na = np.size(x, axis=1)
@@ -17,7 +17,7 @@ def LJ(x): # Lennard-Jones potential. Input: 3-by-Na array
     V = 2 * np.sum(L)
     return V
 
-def LJvector2array(x): # respore atomic coordinates from the vector
+def LJvector2array(x): # restore atomic coordinates from the vector
     m = np.size(x)
     Na = np.rint((m + 6) / 3).astype(int)
     Na3 = 3 * Na
@@ -39,7 +39,7 @@ def LJarray2vector(xyz):
     return x
 
 
-def LJpot(x): # Lennard-Jones potential. Input:3*Na - 6 vector
+def LJpot(x): # Lennard-Jones potential. Input: 3 * Na - 6 vector
     x = LJvector2array(x)
     Na = np.size(x, axis=1)
     r2 = np.zeros((Na,Na)) # matrix of distances squared
@@ -51,7 +51,7 @@ def LJpot(x): # Lennard-Jones potential. Input:3*Na - 6 vector
     V = 2 * np.sum(L)
     return V
 
-def LJgrad(x): # Lennard-Jones gradient. Input: 3*Na - 6 vector
+def LJgrad(x): # Lennard-Jones gradient. Input: 3 * Na - 6 vector
     x = LJvector2array(x)
     Na = np.size(x, axis=1)
     r2 = np.zeros((Na, Na)) # matrix of distances squared
@@ -70,7 +70,7 @@ def LJgrad(x): # Lennard-Jones gradient. Input: 3*Na - 6 vector
     gvec = LJarray2vector(g)
     return gvec
 
-def LJhess(x): # Lennard-Jones potential. Input 3*Na - 6 vector
+def LJhess(x): # Lennard-Jones potential. Input 3 * Na - 6 vector
     # find the Hessian using finite differences
     h = 1e-6
     n = np.size(x)
