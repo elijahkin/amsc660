@@ -6,7 +6,7 @@ co = np.load('hw10/data/co.npy')
 tt = np.load('hw10/data/tt.npy')
 btb = np.load('hw10/data/btb.npy')
 
-def plot_lj(xyz):
+def plot_lj(xyz, azimuth, elevation):
   # Compute distances between every pair of nodes
   D = np.zeros((7, 7))
   for i in range(7):
@@ -33,6 +33,10 @@ def plot_lj(xyz):
         dy = [xyz[1][i], xyz[1][j]]
         dz = [xyz[2][i], xyz[2][j]]
         ax.plot(dx, dy, dz, 'k')
+  ax.view_init(elevation, azimuth)
   plt.show()
 
-plot_lj(btb)
+plot_lj(pb, 5, 23)
+plot_lj(co, 1, 18)
+plot_lj(tt, 138, 41)
+plot_lj(btb, -26, 6)
