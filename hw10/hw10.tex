@@ -14,7 +14,7 @@
   \begin{equation*}
     \cos \theta \coloneqq - \frac{\nabla f(x)^\top p}{\lVert \nabla f(x) \rVert \lVert p \rVert} > 0.
   \end{equation*}
-  Also, bound $\theta$ away from zero in terms of the condition number of $B$, i.e., $\kappa(B) = \lVert B \rVert \lVert B^{-1} \rVert$.
+  Also, bound $\cos \theta$ away from zero in terms of the condition number of $B$, i.e., $\kappa(B) = \lVert B \rVert \lVert B^{-1} \rVert$.
   \begin{solution}
     Taking the gradient of $m$, we find
     \begin{equation*}
@@ -38,7 +38,27 @@
     \end{equation*}
     as desired.
 
-    TODO
+    We will now bound $\cos \theta$ away from 0. Recall that for any matrix $A$ and any vector $y \neq 0$,
+    \begin{equation*}
+      \lVert A \rVert = \max_{x \neq 0} \frac{\lVert Ax \rVert}{\lVert x \rVert} \geq \frac{\lVert Ay \rVert}{\lVert y \rVert}
+    \end{equation*}
+    and so multiplying through by $\lVert y \rVert$, we obtain $\lVert Ay \rVert \leq \lVert A \rVert \lVert y \rVert$. Applying this property twice, we find
+    \begin{equation*}
+      \lVert \nabla f(x) \rVert = \lVert B B^{-1} \nabla f(x) \rVert \leq \lVert B \rVert \lVert B^{-1} \rVert \lVert \nabla f(x) \rVert = \kappa(B) \lVert \nabla f(x) \rVert.
+    \end{equation*}
+    Hence, it follows that
+    \begin{equation*}
+      \cos \theta \coloneqq - \frac{\nabla f(x)^\top p}{\lVert \nabla f(x) \rVert \lVert p \rVert} \geq - \frac{\nabla f(x)^\top p}{\kappa(B) \lVert \nabla f(x) \rVert \lVert p \rVert}.
+    \end{equation*}
+    Further, by the Cauchy-Schwarz inequality, we have that
+    \begin{equation*}
+      |\nabla f(x)^\top p | \leq \lVert \nabla f(x) \rVert \lVert p \rVert
+    \end{equation*}
+    and so
+    \begin{equation*}
+      \cos \theta \geq - \frac{\nabla f(x)^\top p}{\kappa(B) \lVert \nabla f(x) \rVert \lVert p \rVert} \geq - \frac{\nabla f(x)^\top p}{\kappa(B) |\nabla f(x)^\top p |} = \frac{1}{\kappa(B)} > 0
+    \end{equation*}
+    as desired.
   \end{solution}
 
   \question Let $f(x)$, $x \in \mathbb{R}^n$, be a smooth arbitrary function. The BFGS method is a quasi-Newton method with the Hessian approximate built recursively by
@@ -164,7 +184,11 @@
       \end{equation*}
       so $x = 1$ and $y = 1$. Hence, $(1, 1)$ is the only local minimizer.
 
-      Finally, we claim that the Hessian is positive definite, so TODO
+      Finally, we claim that the Hessian is positive definite at the local minimizer. To see this, consider
+      \begin{equation*}
+        \begin{vmatrix} 802 - \lambda & -400 \\ -400 & 200 - \lambda \end{vmatrix} = (802 - \lambda)(200 - \lambda) - 400^2 = \lambda^2 - 1002 \lambda + 400
+      \end{equation*}
+      so the eigenvalues of the Hessian at this point are approximately $\lambda_1 \approx 1001.6006$ and $\lambda_2 \approx 0.3994$. Since both eigenvalues are positive, the Hessian is positive definite at $(-1, 1)$.
     \end{solution}
     \item Program the steepest descent, Newton's, and BFGS algorithms using the backtracking line search. Use them to minimize the Rosenbrock function (\ref{eq:rosenbrock}). First start with the initial guess $(1.2, 1.2)$ and then with the more difficult one $(-1.2, 1)$. Set the initial step length $\alpha_0 = 1$ and plot the step length $\alpha_k$ versus $k$ for each of the methods.
 
@@ -177,7 +201,7 @@
         \centering
         \includegraphics[scale=0.7]{rosenbrock.png}
       \end{figure}
-      The code and plots for all three methods with each initial guesses can be found \href{https://github.com/elijahkin/amsc660/blob/main/hw10/hw10.ipynb}{here}.
+      The code and plots for all three methods with each initial guess can be found \href{https://github.com/elijahkin/amsc660/blob/main/hw10/hw10.ipynb}{here}.
 
       Comparing the performance of the three methods, we observe superlinear convergence in BFGS and Newton's method. Steepest descent is much slower by comparison, failing to converge in even 1000 iterations.
     \end{solution}
