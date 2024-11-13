@@ -80,15 +80,49 @@
 
   \emph{Hint: You will need to compute the derivative of $\phi$ and express it in terms of $\lVert p_l \rVert$ and $\lVert (B + \lambda^{(l)} I)^{-1} g \rVert^2$. Also, you will need to use the fact that the Cholesky factor of any SPD matrix $M$ is related to $M^{1 / 2}$ via an orthogonal transformation.}
   \begin{solution}
-    Since $B$ is symmetric, it has a spectral decomposition $B = Q \Lambda Q^\top$. In particular, we can choose one such that its eigenvectors $\{q_j\}_{j = 1}^n$ are orthonormal.
-
     We first claim that
     \begin{equation*}
-      p_l = -\sum_{j = 1}^n \frac{q_j^\top g}{\lambda_j + \lambda} q_j \text{ and } z_l = -\sum_{j = 1}^n \frac{q_j^\top g}{(\lambda_j + \lambda)^{3 / 2}} q_j.
+      p_l = -\sum_{j = 1}^n \frac{q_j^\top g}{\lambda_j + \lambda} q_j.
     \end{equation*}
-    TODO
-
-    and so by the orthonormality of $\{q_j\}_{j = 1}^n$, we have that
+    Since $B$ is symmetric, it has a spectral decomposition $B = Q \Lambda Q^\top$. In particular, we can choose one such that its eigenvectors $\{q_j\}_{j = 1}^n$ are orthonormal. Then
+    \begin{equation*}
+      B + \lambda^{(l)} I = Q \Lambda Q^\top + \lambda^{(l)} I = Q \Lambda Q^\top + \lambda^{(l)} Q I Q^\top = Q (\Lambda + \lambda^{(l)} I) Q^\top
+    \end{equation*}
+    and hence
+    \begin{equation*}
+      p_l = -(B + \lambda^{(l)} I)^{-1} g = -\left(Q (\Lambda + \lambda^{(l)} I) Q^\top\right)^{-1} g = -Q (\Lambda + \lambda^{(l)} I)^{-1} Q^\top g
+    \end{equation*}
+    meaning
+    \begin{equation*}
+      p_l = -\sum_{j = 1}^n \frac{q_j^\top g}{\lambda_j + \lambda} q_j.
+    \end{equation*}
+    Then since the eigenvectors $\{q_j\}_{j = 1}^n$ form an orthonormal basis, this means that
+    \begin{equation*}
+      \lVert p_l \rVert = \left[\sum_{j = 1}^n \frac{(q_j^\top g)^2}{(\lambda_j + \lambda)^2}\right]^{1 / 2}.
+    \end{equation*}
+    We now claim that
+    \begin{equation*}
+      \lVert z_l \rVert = \left[\sum_{j = 1}^n \frac{(q_j^\top g)^2}{(\lambda_j + \lambda)^3}\right]^{1 / 2}.
+    \end{equation*}
+    From the hint, we know that $L$, the Cholesky factor of $B + \lambda{(l)} I$, can be written as
+    \begin{equation*}
+      L = Q \sqrt{\Lambda + \lambda^{(l)} I} Q^\top \tilde{Q}
+    \end{equation*}
+    for some orthogonal matrix $\tilde{Q}$. Hence, $L^{-1} = \tilde{Q}^\top Q (\Lambda + \lambda^{(l)} I)^{-1 / 2} Q^\top$ and so
+    \begin{multline*}
+      z_l = L^{-1} p_l = (\tilde{Q}^\top Q (\Lambda + \lambda^{(l)} I)^{-1 / 2} Q^\top)(-Q (\Lambda + \lambda^{(l)} I)^{-1} Q^\top g) \\
+      = -\tilde{Q}^\top Q (\Lambda + \lambda^{(l)} I)^{-3 / 2} Q^\top g.
+    \end{multline*}
+    Toward the desired result, recall that multiplication by an orthogonal matrix does not change a vector's norm; let $Q$ be an orthogonal matrix and $x \in \mathbb{R}^n$. Then
+    \begin{equation*}
+    \lVert Qx \rVert^2 = (Qx)^\top (Qx) = x^\top Q^\top Q x = x^\top x = \lVert x \rVert^2.
+    \end{equation*}
+    From this fact, we have that
+    \begin{multline*}
+      \lVert z_l \rVert = \lVert \tilde{Q}^\top Q (\Lambda + \lambda^{(l)} I)^{-3 / 2} Q^\top g \rVert = \lVert Q (\Lambda + \lambda^{(l)} I)^{-3 / 2} Q^\top g \rVert \\
+      = \left\lVert \sum_{j = 1}^n \frac{q_j^\top g}{(\lambda_j + \lambda)^{3 / 2}} q_j \right\rVert = \left[\sum_{j = 1}^n \frac{(q_j^\top g)^2}{(\lambda_j + \lambda)^3}\right]^{1 / 2}.
+    \end{multline*}
+    Hence, we have shown that both
     \begin{equation*}
       \lVert p_l \rVert = \left[\sum_{j = 1}^n \frac{(q_j^\top g)^2}{(\lambda_j + \lambda)^2}\right]^{1 / 2} \text{ and } \lVert z_l \rVert = \left[\sum_{j = 1}^n \frac{(q_j^\top g)^2}{(\lambda_j + \lambda)^3}\right]^{1 / 2}.
     \end{equation*}
