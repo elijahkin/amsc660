@@ -153,7 +153,7 @@
       \centering
       \includegraphics[scale=0.6]{lennard_jones.png}
     \end{figure}
-    TODO
+    We see visually that the Newton's method convergences faster than the BFGS method. The converges is comparable (possibly slightly faster) than that of line search.
   \end{solution}
 
   \question (Approx. Problem 3.1 from [NW]) Write a code that applies the two algorithms from the previous problem (the trust-region BFGS with the dogleg solver and the trust-region Newton with the exact subspace solver) to the Rosenbrock function as in Problem 4 of HW9:
@@ -164,11 +164,12 @@
 
   Plot the level sets of the Rosenbrock function using the command contour and plot the iterations for each method over it. Plot $\lVert (x_k, y_k) - (x^*, y^*) \rVert$ versus $k$ in the logarithmic scale along the $y$-axis for each method. Compare the performance of the methods.
   \begin{solution}
+    We plot the figure for the harder intitial condition $(-1.2, 1)$ below. The plots for the other initial condition can be found at \href{https://github.com/elijahkin/amsc660/blob/main/hw11/hw11.ipynb}{here}.
     \begin{figure}
       \centering
       \includegraphics[scale=0.6]{rosenbrock.png}
     \end{figure}
-    TODO
+    As with the previous question, Newton's method converges in approximately 25 iterations, faster than that BFGS, which converges in approximately 40 iterations.
   \end{solution}
 \end{questions}
 
