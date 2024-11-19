@@ -11,7 +11,7 @@ def LevenbergMarquardt(Res_and_Jac, x, ITER_MAX, TOL):
     # subject to R - ||p|| >= 0
     # rho = [loss - loss(x + p)] / [loss - m(p)]
 
-    # parameters for Levengerg-Marquardt
+    # parameters for Levenberg-Marquardt
     RMAX = 1
     RMIN = 1e-12
     RHO_GOOD = 0.75 # increase R is rho > RHO_GOOD
@@ -30,7 +30,6 @@ def LevenbergMarquardt(Res_and_Jac, x, ITER_MAX, TOL):
     gradnorm = np.linalg.norm(grad)
     gradnormvals[0] = gradnorm
     R = 0.2 * RMAX # initial trust region radius
-    print(f'iter #0: loss = {lossvals[0]}, gradnorm = {gradnorm}')
 
     # start iterations
     iter = 1
@@ -82,6 +81,5 @@ def LevenbergMarquardt(Res_and_Jac, x, ITER_MAX, TOL):
             gradnorm = np.linalg.norm(grad)
         lossvals[iter] = lossnew
         gradnormvals[iter] = gradnorm
-        print(f'LM, iter #{iter}: loss = {lossvals[iter]:.4e}, gradnorm = {gradnorm:.4e}, rho = {rho:.4e}, R = {R:.4e}')
-        iter = iter + 1
+        iter += 1
     return x, lossvals[0 : iter], gradnormvals[0 : iter]
