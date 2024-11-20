@@ -4,7 +4,7 @@ import scipy
 def Loss(r):
     return 0.5 * np.sum(r**2)
 
-def LevenbergMarquardt(Res_and_Jac, x, ITER_MAX, TOL):
+def LevenbergMarquardt(Res_and_Jac, X_train, y_train, x, ITER_MAX, TOL):
     # minimizes loss = 0.5/n sum_{j=1}^n r_j^2(x)
     # constrained minimization problem solved at each step:
     # m(p) = grad^\top p + 0.5 p^\top Bmatr p --> min
@@ -19,7 +19,7 @@ def LevenbergMarquardt(Res_and_Jac, x, ITER_MAX, TOL):
     ETA = 0.01 # reject step if rho < ETA
 
     # initialization
-    r, J = Res_and_Jac(x)
+    r, J = Res_and_Jac(X_train, y_train, x)
     n, d = np.shape(J)
     lossvals = np.zeros(ITER_MAX)
     gradnormvals = np.zeros(ITER_MAX)
@@ -63,7 +63,7 @@ def LevenbergMarquardt(Res_and_Jac, x, ITER_MAX, TOL):
                     gap = np.abs(norm_p - R)
         # evaluate the progress
         xnew = x + p
-        rnew, Jnew = Res_and_Jac(xnew)
+        rnew, Jnew = Res_and_Jac(X_train, y_train, xnew)
         lossnew = Loss(rnew)
         rho = -(lossvals[iter - 1] - lossnew) / (np.sum(grad * p) + 0.5 * sum(p * np.matmul(Bmatr, p)))
         # adjust the trust region radius
