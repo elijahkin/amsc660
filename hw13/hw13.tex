@@ -42,8 +42,26 @@
   \begin{equation*}
     \begin{bmatrix} G & A^\top \\ A & 0 \end{bmatrix} = \begin{bmatrix} I & 0 \\ X & I \end{bmatrix} \begin{bmatrix} G & 0 \\ 0 & S \end{bmatrix} \begin{bmatrix} I & X^\top \\ 0 & I \end{bmatrix}.
   \end{equation*}
-  Then use Sylvester's Law of Inertia (look it up!) to finish the proof.}
+  Then use Sylvester's law of inertia (look it up!) to finish the proof.}
   \begin{solution}
+    Starting with the ansatz suggested by the hint, note that
+    \begin{equation*}
+      \begin{bmatrix} I & 0 \\ X & I \end{bmatrix} \begin{bmatrix} G & 0 \\ 0 & S \end{bmatrix} \begin{bmatrix} I & X^\top \\ 0 & I \end{bmatrix} = \begin{bmatrix} G & 0 \\ XG & S \end{bmatrix} \begin{bmatrix} I & X^\top \\ 0 & I \end{bmatrix} = \begin{bmatrix} G & GX^\top \\ XG & XGX^\top + S \end{bmatrix}
+    \end{equation*}
+    hence to achieve equality with $K$ in the bottom left block, let $X = AG^{-1}$. It remains to achieve equality in the bottom right block; note that
+    \begin{equation*}
+      XGX^\top + S = AG^{-1} G (AG^{-1})^\top + S = AG^{-1}A^\top + S
+    \end{equation*}
+    and hence we take $S = -AG^{-1}A^\top$ to achieve equality with $K$. Hence, we have written
+    \begin{equation*}
+      K = \begin{bmatrix} I & 0 \\ X & I \end{bmatrix} \begin{bmatrix} G & 0 \\ 0 & S \end{bmatrix} \begin{bmatrix} I & 0 \\ X & I \end{bmatrix}^\top.
+    \end{equation*}
+    Since $K$ is symmetric (because $G$ is symmetric), by Sylvester's law of inertia, we have that $K$ has the same inertia as the symmetric matrix
+    \begin{equation*}
+      \begin{bmatrix}
+        G & 0 \\ 0 & S
+      \end{bmatrix}.
+    \end{equation*}
     TODO
   \end{solution}
 
