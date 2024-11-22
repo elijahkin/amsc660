@@ -1,0 +1,92 @@
+\documentclass{../kin_math}
+
+\header{Elijah Kin}{Homework 13}{AMSC660}
+\headrule
+
+\begin{document}
+
+\begin{questions}
+  \question Consider the classification problem \texttt{one} versus \texttt{seven} with the MNIST dataset from the previous homework. Use the same settings as for the stochastic gradient descent, i.e., the quadratic dividing hypersurface
+  \begin{equation*}
+    x^\top W x + v^\top x + b,
+  \end{equation*}
+  the quadratic test function
+  \begin{equation*}
+    q(x_j; \textbf{w}) \coloneqq y_j\left(x^\top W x + v^\top x + b\right),
+  \end{equation*}
+  and the loss function
+  \begin{equation*}
+    f(\textbf{w}) = \frac{1}{n} \sum_{j = 1}^n \log\left(1 + e^{-q(x_j; \textbf{w})}\right) + \frac{\lambda}{2} \lVert \textbf{w} \rVert^2.
+  \end{equation*}
+  Here \textbf{w} denotes the $d^2 + d + 1$-dimensional vector of coefficients of $\{W, v, b\}$.
+
+  Implement
+  \begin{enumerate}
+    \item Deterministic and Stochastic Nesterov (experiment with various batch sizes). Its deterministic version is given by Eqs. (61)-(62) in \texttt{Optimization.pdf};
+    \item Deterministic and Stochastic Adam (experiment with various batch sizes). Its deterministic version is proposed in a paper by D. P. Kingma and J. L. Ba ``Adam: A Method for Stochastic Optimization'' where ADAM is introduced: \url{https://arxiv.org/pdf/1412.6980.pdf}.
+  \end{enumerate}
+  You can use a constant step size. Run the stochastic optimizers for the same number of epochs (if you have $n$ data points and your batch size is $m$ then $\textsf{round}(n / m)$ timesteps is one epoch). Compare the performance of these optimizers with each other and with the stochastic gradient descent from the previous homework. Write a report containing graphs of the objective function and the norm of its gradient versus the iteration number. Which stochastic optimizer do you find the most efficient? Which batch size do you recommend? Which step size do you recommend?
+  \begin{solution}
+    TODO
+  \end{solution}
+
+  \question Consider the KKT system
+  \begin{equation*}
+    \begin{bmatrix} G & A^\top \\ A & 0 \end{bmatrix} \begin{bmatrix} -\textbf{p} \\ \boldsymbol{\lambda} \end{bmatrix} = \begin{bmatrix} \textbf{g} \\ 0 \end{bmatrix}
+  \end{equation*}
+  where $G$ is $d \times d$ symmetric positive definite and $A$ is $m \times d$ and has linearly independent rows. Show that the matrix
+  \begin{equation*}
+    K \coloneqq \begin{bmatrix} G & A^\top \\ A & 0 \end{bmatrix}
+  \end{equation*}
+  is of \emph{saddle-point type}, i.e., it has $d$ positive eigenvalues and $m$ negative ones. \emph{Hint: Find matrices $X$ and $S$ ($S$ is called the \textbf{Schur complement}) such that
+  \begin{equation*}
+    \begin{bmatrix} G & A^\top \\ A & 0 \end{bmatrix} = \begin{bmatrix} I & 0 \\ X & I \end{bmatrix} \begin{bmatrix} G & 0 \\ 0 & S \end{bmatrix} \begin{bmatrix} I & X^\top \\ 0 & I \end{bmatrix}.
+  \end{equation*}
+  Then use Sylvester's Law of Inertia (look it up!) to finish the proof.}
+  \begin{solution}
+    TODO
+  \end{solution}
+
+  \question Consider an equality-constrained quadratic program QP
+  \begin{align*}
+    &\min \frac{1}{2} \textbf{x}^\top G \textbf{x} + \textbf{c}^\top \textbf{x} \\
+    &\text{subject to } A \textbf{x} = \textbf{b}.
+  \end{align*}
+  The matrix $G$ is symmetric. Assume that $A$ is full rank (i.e., its rows are linearly independent) and $Z^\top GZ$ is positive definite where $Z$ is a basis for the null-space of $A$, i.e., $AZ = 0$.
+  \begin{enumerate}
+    \item Write the KKT system for this case in the matrix form.
+    \begin{solution}
+      TODO
+    \end{solution}
+    \item Show that the matrix of this system $K$ is invertible. \emph{Hint: assume that there is a vector $\textbf{z} \coloneqq (\textbf{x}, \textbf{y})^\top$ such that $K \textbf{z} = 0$. Consider the quadratic form $\textbf{z}^\top K \textbf{z}$, use logical reasoning and algebra, and arrive at the conclusion that then $\textbf{z} = 0$.}
+    \begin{solution}
+      TODO
+    \end{solution}
+    \item Conclude that there exists a unique vector $(\textbf{x}^*, \boldsymbol{\lambda}^*)^\top$ that solves the KKT system. Note that since we have only equality constraints, the positivity of $\boldsymbol{\lambda}$ is irrelevant.
+    \begin{solution}
+      TODO
+    \end{solution}
+  \end{enumerate}
+
+  \question Consider the following quadratic program with inequality constraints:
+  \begin{align*}
+    &\min f(x, y) = (x - 1)^2 + (y - 2.5)^2 \\
+    &\text{subject to } x - 2y + 2, -x - 2y + 6, -x + 2y + 2, x, y \geq 0
+  \end{align*}
+  \begin{enumerate}
+    \item Plot the level sets of the objective function and the feasible set.
+    \begin{solution}
+      TODO
+    \end{solution}
+    \item What is the exact solution? Find it analytically with the help of your figure.
+    \begin{solution}
+      TODO
+    \end{solution}
+    \item Suppose the initial point is $(2, 0)$. Initially, constraints 3 and 5 are active, hence start with $\mathcal{W} = \{3, 5\}$. Work out all iterations of the active-set method analytically. The arising linear systems should be very easy to solve. For each iteration, you need to write out the set $\mathcal{W}$, the KKT system, its solution, i.e., $(p_x, p_y)$, the vector of Lagrange multipliers, and the current iterate $(x_k, y_k)$. Plot all iterates on your figure. There should be a total of 5 iterations.
+    \begin{solution}
+      TODO
+    \end{solution}
+  \end{enumerate}
+\end{questions}
+
+\end{document}
