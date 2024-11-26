@@ -74,6 +74,10 @@
   \begin{enumerate}
     \item Write the KKT system for this case in the matrix form.
     \begin{solution}
+      From the above, the Lagrangian is
+      \begin{equation*}
+        \mathcal{L}(\textbf{x}, \boldsymbol{\lambda}) = \frac{1}{2} \textbf{x}^\top G \textbf{x} + \textbf{c}^\top \textbf{x} - TODO
+      \end{equation*}
       TODO
     \end{solution}
     \item Show that the matrix of this system $K$ is invertible. \emph{Hint: assume that there is a vector $\textbf{z} \coloneqq (\textbf{x}, \textbf{y})^\top$ such that $K \textbf{z} = 0$. Consider the quadratic form $\textbf{z}^\top K \textbf{z}$, use logical reasoning and algebra, and arrive at the conclusion that then $\textbf{z} = 0$.}
@@ -94,11 +98,23 @@
   \begin{enumerate}
     \item Plot the level sets of the objective function and the feasible set.
     \begin{solution}
-      TODO
+      We plot the levels sets of the objective function and the boundary of the feasible set below. The corresponding code can be found \href{https://github.com/elijahkin/amsc660/blob/main/hw13/hw13.ipynb}{here}.
+      \begin{figure}
+        \centering
+        \includegraphics[scale=0.8]{feasible.png}
+      \end{figure}
     \end{solution}
     \item What is the exact solution? Find it analytically with the help of your figure.
     \begin{solution}
-      TODO
+      From the above figure, we see that solution lies on the line $x - 2y + 2 = 0$. Solving for $x$, we find $x = 2y - 2$, and so we seek to find
+      \begin{equation*}
+        \min f(2y - 2, y) = \min (2y - 3)^2 + (y - 2.5)^2
+      \end{equation*}
+      which occurs where
+      \begin{equation*}
+        0 = \frac{d}{dy} \left[(2y - 3)^2 + (y - 2.5)^2\right] = 4(2y - 3) + 2(y - 2.5) = 10y - 17,
+      \end{equation*}
+      so $y^* = 17 / 10$ and hence $x^* = 14 / 10$.
     \end{solution}
     \item Suppose the initial point is $(2, 0)$. Initially, constraints 3 and 5 are active, hence start with $\mathcal{W} = \{3, 5\}$. Work out all iterations of the active-set method analytically. The arising linear systems should be very easy to solve. For each iteration, you need to write out the set $\mathcal{W}$, the KKT system, its solution, i.e., $(p_x, p_y)$, the vector of Lagrange multipliers, and the current iterate $(x_k, y_k)$. Plot all iterates on your figure. There should be a total of 5 iterations.
     \begin{solution}
