@@ -64,11 +64,34 @@ The provided codes solve this nonlinear least squares problem and find a dividin
 \section{Tasks}
 \subsection{Task 1}
 Experiment with \textbf{the number of PCAs} using the provided codes. Find out how the number of PCAs affects the number of misclassified digits. Plot a graph of the number of misclassified digits in the test set vs the number of PCAs.
+\begin{solution}
+  We plot below the number of misclassified digits with each number of PCAs in $\{5, 10, 15, 20, 25\}$. As expected, we find that as the number of PCAs increases, the number of misclassified digits decreases.
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.8]{pca.png}
+  \end{figure}
+\end{solution}
 \subsection{Task 2}
 Set the number of PCAs to 20. Program the \textbf{Gauss-Newton} algorithm and solve the nonlinear least squares problem in Section \ref{least_squares} using your routine. Plot the graphs of the loss and the norm of the gradient versus iteration number. To avoid problems with inverting the matrix $J^\top J$, you can regularize it by changing it to
 \begin{equation*}
   J^\top J + I \cdot 10^{-6}.
 \end{equation*}
+\begin{solution}
+  We implement the Gauss-Newton algorithm \href{https://github.com/elijahkin/amsc660/blob/main/hw12/hw12.ipynb}{here}. With a tolerance of $10^{-3}$, we find that the algorithm misclassifies 20 iterations digits in the test set. We plot the loss and the norm of the gradient of the loss below.
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.8]{gauss_newton.png}
+  \end{figure}
+\end{solution}
 \subsection{Task 3}
 Define the loss function as in (\ref{eq:loss}). Implement \textbf{Stochastic Gradient Descent}. Experiment with various batch sizes and step sizes. Also, try a few stepsize decreasing strategies. Plot the graphs of the loss and the norm of the gradient versus iteration number. Write a summary of your observations. Conclude which batch sizes are reasonable, which stepsizes are reasonable, and how many epochs are enough. Is it beneficial for this problem to use a decreasing step size?
+\begin{solution}
+  Trying several different values of batch size, step size, and $\lambda$ in the Tikhonov regularization, we find that the best performance occurs with batch size 10, constant $\alpha = 10^{-3}$, and $\lambda = 10^{-4}$, after 100 epochs we misclassify only 11 digits.
+
+  Somewhat counterintuitively, we were unable to best this performance using a decreasing step size, although a decreasing step size should in theory yield better results. We plot the loss and the norm of the gradient of the loss below.
+  \begin{figure}
+    \centering
+    \includegraphics[scale=0.8]{sgd.png}
+  \end{figure}
+\end{solution}
 \end{document}
