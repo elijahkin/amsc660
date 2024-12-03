@@ -62,7 +62,22 @@
         G & 0 \\ 0 & S
       \end{bmatrix}.
     \end{equation*}
-    TODO
+    We now claim that the eigenvalues of the above matrix are exactly the eigenvalues of $G$ and $S$ combined. This follows from the multiplicativity of the determinant, since,
+    \begin{multline*}
+      \det\left(\begin{bmatrix} G - \lambda I_d & 0 \\ 0 & S - \lambda I_m \end{bmatrix}\right) = \det\left(\begin{bmatrix} G - \lambda I_d & 0 \\ 0 & I_m \end{bmatrix} \begin{bmatrix} I_d & 0 \\ 0 & S - \lambda I_m \end{bmatrix}\right) \\
+      = \det\left(\begin{bmatrix} G - \lambda I_d & 0 \\ 0 & I_m \end{bmatrix}\right) \det\left(\begin{bmatrix} I_d & 0 \\ 0 & S - \lambda I_m \end{bmatrix}\right) = \det\left(G - \lambda I_d\right) \det\left(S - \lambda I_m\right).
+    \end{multline*}
+    Hence, the characteristic polynomial of the above matrix is the product of the characteristic polynomials of $G$ and $S$, so the eigenvalues of the above matrix are exactly the eigenvalues of $G$ and $S$ combined.
+
+    It remains to show that all $m$ eigenvalues of $S$ are negative. Toward this end, consider
+    \begin{equation*}
+      x^\top S x = -x^\top AG^{-1} A^\top x = -(A^\top x)^\top G^{-1} (A^\top x).
+    \end{equation*}
+    Then since $G^{-1}$ is symmetric positive definite,
+    \begin{equation*}
+      x^\top S x = -(A^\top x)^\top G^{-1} (A^\top x) \leq 0
+    \end{equation*}
+    with equality if and only if $A^\top x = 0$, hence $S$ is negative definite, meaning all eigenvalues of $S$ are negative. Hence, referring back to Sylvester's law of inertia, $K$ has $d$ positive eigenvalues and $m$ negative ones.
   \end{solution}
 
   \question Consider an equality-constrained quadratic program QP
@@ -74,19 +89,79 @@
   \begin{enumerate}
     \item Write the KKT system for this case in the matrix form.
     \begin{solution}
-      From the above, the Lagrangian is
+      From the above, we define the Lagrangian
       \begin{equation*}
-        \mathcal{L}(\textbf{x}, \boldsymbol{\lambda}) = \frac{1}{2} \textbf{x}^\top G \textbf{x} + \textbf{c}^\top \textbf{x} - TODO
+        \mathcal{L}(\textbf{x}, \boldsymbol{\lambda}) = \frac{1}{2} \textbf{x}^\top G \textbf{x} + \textbf{c}^\top \textbf{x} - \boldsymbol{\lambda}^\top (A\textbf{x} - \textbf{b})
       \end{equation*}
-      TODO
+      in which case
+      \begin{equation*}
+        \nabla_\textbf{x} \mathcal{L} = G \textbf{x} + \textbf{c} - A^\top \boldsymbol{\lambda}.
+      \end{equation*}
+      Taking $\nabla_\textbf{x} \mathcal{L} = 0$, we obtain the system
+      \begin{align*}
+        G \textbf{x} + \textbf{c} - A^\top \boldsymbol{\lambda} &= 0 \\
+        A \textbf{x} - \textbf{b} &= 0
+      \end{align*}
+      which we can rewrite as
+      \begin{align*}
+        G (-\textbf{x}) + A^\top \boldsymbol{\lambda} &= \textbf{c} \\
+        A (-\textbf{x}) &= - \textbf{b}
+      \end{align*}
+      or equivalently,
+      \begin{align*}
+        \begin{bmatrix} G & A^\top \\ A & 0 \end{bmatrix} \begin{bmatrix} -\textbf{x} \\ \boldsymbol{\lambda} \end{bmatrix} = \begin{bmatrix} \textbf{c} \\ -\textbf{b} \end{bmatrix}.
+      \end{align*}
     \end{solution}
     \item Show that the matrix of this system $K$ is invertible. \emph{Hint: assume that there is a vector $\textbf{z} \coloneqq (\textbf{x}, \textbf{y})^\top$ such that $K \textbf{z} = 0$. Consider the quadratic form $\textbf{z}^\top K \textbf{z}$, use logical reasoning and algebra, and arrive at the conclusion that then $\textbf{z} = 0$.}
     \begin{solution}
-      TODO
+      From (a), recall that
+      \begin{equation*}
+        K = \begin{bmatrix} G & A^\top \\ A & 0 \end{bmatrix}
+      \end{equation*}
+      and so for arbitrary $\textbf{z} \coloneqq (\textbf{x}, \textbf{y})^\top$ it follows that
+      \begin{multline*}
+        \textbf{z}^\top K \textbf{z} = \begin{bmatrix} \textbf{x}^\top & \textbf{y}^\top \end{bmatrix} \begin{bmatrix} G & A^\top \\ A & 0 \end{bmatrix} \begin{bmatrix} \textbf{x} \\ \textbf{y} \end{bmatrix} = \textbf{x}^\top (G \textbf{x} + A^\top \textbf{y}) + \textbf{y}^\top A \textbf{x} \\
+        = \textbf{x}^\top G \textbf{x} + \textbf{x}^\top A^\top \textbf{y} + \textbf{y}^\top A \textbf{x}.
+      \end{multline*}
+      Further, since $\textbf{x}^\top A^\top \textbf{y}$ is a scalar,
+      \begin{equation*}
+        \textbf{x}^\top A^\top \textbf{y} = (\textbf{x}^\top A^\top \textbf{y})^\top = \textbf{y}^\top A \textbf{x}
+      \end{equation*}
+      and so
+      \begin{equation}
+        \label{eq:arbitrary}
+        \textbf{z}^\top K \textbf{z} = \textbf{x}^\top G \textbf{x} + 2 \textbf{y}^\top A \textbf{x}.
+      \end{equation}
+      Now assume that $\textbf{z}$ is such that $K \textbf{z} = 0$. Then
+      \begin{equation*}
+        0 = K \textbf{z} = \begin{bmatrix} G & A^\top \\ A & 0 \end{bmatrix} \begin{bmatrix} \textbf{x} \\ \textbf{y} \end{bmatrix} = \begin{bmatrix} G \textbf{x} + A^\top \textbf{y} \\ A \textbf{x} \end{bmatrix},
+      \end{equation*}
+      so we have both that $G \textbf{x} + A^\top \textbf{y} = 0$ and $A \textbf{x} = 0$. Further, $\textbf{z}^\top K \textbf{z} = \textbf{z}^\top (0) = 0$. Substituting these facts into (\ref{eq:arbitrary}), we find that
+      \begin{equation*}
+        0 = \textbf{z}^\top K \textbf{z} = \textbf{x}^\top G \textbf{x} + 2 \textbf{y}^\top A \textbf{x} = \textbf{x}^\top G \textbf{x} + 2 \textbf{y}^\top(0) = \textbf{x}^\top G \textbf{x}
+      \end{equation*}
+      and so $\textbf{x}^\top G \textbf{x} = 0$.
+
+      Now let $Z$ be a basis for the null-space of $A$. In particular, since $A \textbf{x} = 0$, we can write $\textbf{x} = Z \hat{\textbf{x}}$, a linear combination of the columns of $Z$. Then
+      \begin{equation*}
+        0 = \textbf{x}^\top G \textbf{x} = (Z \hat{\textbf{x}})^\top G (Z \hat{\textbf{x}}) = \hat{\textbf{x}}^\top (Z^\top G Z) \hat{\textbf{x}}.
+      \end{equation*}
+      Hence, since $\hat{\textbf{x}}^\top (Z^\top G Z) \hat{\textbf{x}} = 0$ and $Z^\top G Z$ is assumed to be positive definite, it must be that $\hat{\textbf{x}} = 0$, and likewise, $\textbf{x} = Z \hat{\textbf{x}} = 0$.
+
+      It remains to show that $\textbf{y} = 0$ also. This follows from
+      \begin{equation*}
+        0 = G \textbf{x} + A^\top \textbf{y} = A^\top \textbf{y}
+      \end{equation*}
+      and the fact that $A$ has linearly independent rows, so $A^\top$ has linearly independent columns, meaning $\textbf{y} = 0$ since $A^\top \textbf{y} = 0$.
+
+      Hence, $K \textbf{z} = 0$ has only the trivial solution $\textbf{z} = 0$, meaning $K$ is invertible.
     \end{solution}
     \item Conclude that there exists a unique vector $(\textbf{x}^*, \boldsymbol{\lambda}^*)^\top$ that solves the KKT system. Note that since we have only equality constraints, the positivity of $\boldsymbol{\lambda}$ is irrelevant.
     \begin{solution}
-      TODO
+      Since $K$ is invertible, we can simply recover the vector by taking
+      \begin{equation*}
+        K^{-1} \begin{bmatrix} \textbf{c} \\ -\textbf{b} \end{bmatrix}.
+      \end{equation*}
     \end{solution}
   \end{enumerate}
 
