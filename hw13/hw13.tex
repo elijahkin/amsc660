@@ -192,8 +192,77 @@
       so $y^* = 17 / 10$ and hence $x^* = 14 / 10$.
     \end{solution}
     \item Suppose the initial point is $(2, 0)$. Initially, constraints 3 and 5 are active, hence start with $\mathcal{W} = \{3, 5\}$. Work out all iterations of the active-set method analytically. The arising linear systems should be very easy to solve. For each iteration, you need to write out the set $\mathcal{W}$, the KKT system, its solution, i.e., $(p_x, p_y)$, the vector of Lagrange multipliers, and the current iterate $(x_k, y_k)$. Plot all iterates on your figure. There should be a total of 5 iterations.
+    \newpage
     \begin{solution}
-      TODO
+      We first define $\textbf{x} = \begin{bmatrix} x \\ y \end{bmatrix}$ so that we may write
+      \begin{multline*}
+        f(x, y) = (x - 1)^2 + (y - 2.5)^2 = x^2 + y^2 - 2x - 5y + 29 / 4 \\
+        = \textbf{x}^\top \textbf{x} + \begin{bmatrix} -2 \\ -5 \end{bmatrix}^\top \textbf{x} + 29 / 4.
+      \end{multline*}
+      For convenience, we will define a new function $\hat{f}$ with the same minimizer as $f$, obtained by ignoring the constant $29 / 4$ and scaling by $1 / 2$, that is,
+      \begin{equation*}
+        \hat{f}(\textbf{x}) = \frac{1}{2} \textbf{x}^\top \textbf{x} + \begin{bmatrix} -1 \\ -5 / 2 \end{bmatrix}^\top \textbf{x}.
+      \end{equation*}
+      We will now derive the KKT system for each subproblem of the active-set method with arbitrary $\mathcal{W}$. Note that
+      \begin{multline*}
+        \hat{f}(\textbf{x}_k + \textbf{p}) = (\textbf{x}_k + \textbf{p})^\top (\textbf{x}_k + \textbf{p}) + \begin{bmatrix} -1 \\ -5 / 2 \end{bmatrix}^\top (\textbf{x}_k + \textbf{p}) \\
+        = \textbf{p}^\top \textbf{p} + \left(\textbf{x}_k + \begin{bmatrix} -1 \\ -5 / 2 \end{bmatrix}\right)^\top \textbf{p} + \hat{f}(\textbf{x}_k) = \textbf{p}^\top \textbf{p} + \nabla \hat{f}_k^\top \textbf{p} + \hat{f}(\textbf{x}_k),
+      \end{multline*}
+      from which we obtain the subproblem
+      \begin{align*}
+        &\min g(\textbf{p}) \coloneqq \textbf{p}^\top \textbf{p} + \nabla \hat{f}_k^\top \textbf{p} \\
+        &\text{subject to } A_{\mathcal{W}} \textbf{p} = 0.
+      \end{align*}
+      Towards this end, we define the Lagrangian
+      \begin{equation*}
+        \mathcal{L}(\textbf{p}, \boldsymbol{\lambda}) \coloneqq g(\textbf{p}) - \boldsymbol{\lambda}^\top A_{\mathcal{W}} \textbf{p} = \textbf{p}^\top \textbf{p} + \nabla \hat{f}_k^\top \textbf{p} - \boldsymbol{\lambda}^\top A_{\mathcal{W}} \textbf{p}
+      \end{equation*}
+      in which case
+      \begin{equation*}
+        \nabla_{\textbf{p}} \mathcal{L} = \textbf{p} + \nabla \hat{f}_k - A_{\mathcal{W}}^\top \boldsymbol{\lambda}.
+      \end{equation*}
+      Hence, setting this gradient equal to zero yields the KKT system
+      \begin{align*}
+        -\textbf{p} + A_{\mathcal{W}}^\top \boldsymbol{\lambda} &= \nabla \hat{f}_k \\
+        -A_{\mathcal{W}} \textbf{p} = 0
+      \end{align*}
+      which we rewrite in matrix form as
+      \begin{equation*}
+        \begin{bmatrix} I & A_{\mathcal{W}}^\top \\ A_{\mathcal{W}} & 0 \end{bmatrix} \begin{bmatrix} -\textbf{p} \\ \boldsymbol{\lambda} \end{bmatrix} = \begin{bmatrix} \nabla \hat{f}_k \\ 0 \end{bmatrix}.
+      \end{equation*}
+      We now begin the iterations starting with initial point $\textbf{x}_0 = \begin{bmatrix} 2 & 0 \end{bmatrix}^\top$, so that $\mathcal{W} = \{3, 5\}$ and the KKT system is
+      \begin{equation*}
+        \begin{bmatrix} 1 & 0 & -1 & 0 \\ 0 & 1 & 2 & 1 \\ -1 & 2 & 0 & 0 \\ 0 & 1 & 0 & 0 \end{bmatrix} \begin{bmatrix} -p_x \\ -p_y \\ \lambda_3 \\ \lambda_5 \end{bmatrix} = \begin{bmatrix} 1 \\ -5 / 2 \\ 0 \\ 0 \end{bmatrix}.
+      \end{equation*}
+      We find that this system has the solution $(p_x, p_y) = (0, 0)$ and $(\lambda_3, \lambda_5) = (-1, -1 / 2)$. Therefore, we remove $3$ from $\mathcal{W}$ and keep $\textbf{x}_1 = \textbf{x}_0 = \begin{bmatrix} 2 & 0 \end{bmatrix}^\top$. We now begin the second iteration with $\mathcal{W} = \{5\}$, yielding the KKT system
+      \begin{equation*}
+        \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 1 \\ 0 & 1 & 0 \end{bmatrix} \begin{bmatrix} -p_x \\ -p_y \\ \lambda_5 \end{bmatrix} = \begin{bmatrix} 1 \\ -5 / 2 \\ 0 \end{bmatrix}
+      \end{equation*}
+      We find that this system has the solution $(p_x, p_y) = (-1, 0)$ and $\lambda_5 = -5 / 2$. We then compute the step size
+      \begin{equation*}
+        \alpha = \min\left\{1, \min_{i \notin \mathcal{W}, \, \textbf{a}_i^\top \textbf{p} < 0} \frac{\textbf{b}_i - \textbf{a}_i^\top \textbf{x}_1}{\textbf{a}_i^\top \textbf{p}} \right\} = \min\{1, \min\{2, 4, 2\}\} = 1,
+      \end{equation*}
+      and hence $\textbf{x}_2 = \textbf{x}_1 + \alpha \textbf{p} = \begin{bmatrix} 1 & 0 \end{bmatrix}^\top$. At the start of the third iteration, we still have $\mathcal{W} = \{5\}$, so our KKT system is
+      \begin{equation*}
+        \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 1 \\ 0 & 1 & 0 \end{bmatrix} \begin{bmatrix} -p_x \\ -p_y \\ \lambda_5 \end{bmatrix} = \begin{bmatrix} 0 \\ -5 / 2 \\ 0 \end{bmatrix}
+      \end{equation*}
+      which has the solution $(p_x, p_y) = (0, 0)$ and $\lambda_5 = -5 / 2$, so we remove $5$ from $\mathcal{W}$ and take $\textbf{x}_3 = \textbf{x}_2 = \begin{bmatrix} 1 & 0 \end{bmatrix}^\top$. Now at the start of the fourth iteration, we have $\mathcal{W} = \{\}$, yielding the KKT system
+      \begin{equation*}
+        \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix} \begin{bmatrix} -p_x \\ -p_y \end{bmatrix} = \begin{bmatrix} 0 \\ -5 / 2 \end{bmatrix}
+      \end{equation*}
+      with solution $(p_x, p_y) = (0, 5 / 2)$. Then computing the step size,
+      \begin{equation*}
+        \alpha = \min\left\{1, \min\{1, 3 / 5\} \right\} = 3 / 5,
+      \end{equation*}
+      and hence $\textbf{x}_4 = \textbf{x}_3 + \alpha \textbf{p} = \begin{bmatrix} 1 & 3 / 2 \end{bmatrix}^\top$. We also add $1$ to $\mathcal{W}$. At long last we begin the fifth iteration with $\mathcal{W} = \{1\}$. This yields the KKT system
+      \begin{equation*}
+        \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & -2 \\ 1 & -2 & 0 \end{bmatrix} \begin{bmatrix} -p_x \\ -p_y \\ \lambda_1 \end{bmatrix} = \begin{bmatrix} 0 \\ -1 \\ 0 \end{bmatrix}
+      \end{equation*}
+      with solution $(p_x, p_y) = (2 / 5, 1 / 5)$ and $\lambda_1 = 2 / 5$. Since all Lagrange multipliers are positive, we are done. Computing the final step size,
+      \begin{equation*}
+        \alpha = \min\left\{1, \min\{2\}\right\} = 1
+      \end{equation*}
+      we find that $\textbf{x}_5 = \textbf{x}_4 + \alpha \textbf{p} = \begin{bmatrix} 7 / 5 & 17 / 10 \end{bmatrix}^\top$.
     \end{solution}
   \end{enumerate}
 \end{questions}
