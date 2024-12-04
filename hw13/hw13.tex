@@ -158,10 +158,11 @@
     \end{solution}
     \item Conclude that there exists a unique vector $(\textbf{x}^*, \boldsymbol{\lambda}^*)^\top$ that solves the KKT system. Note that since we have only equality constraints, the positivity of $\boldsymbol{\lambda}$ is irrelevant.
     \begin{solution}
-      Since $K$ is invertible, we can simply recover the vector by taking
+      Since $K$ is invertible, we can simply compute
       \begin{equation*}
-        K^{-1} \begin{bmatrix} \textbf{c} \\ -\textbf{b} \end{bmatrix}.
+        K^{-1} \begin{bmatrix} \textbf{c} \\ -\textbf{b} \end{bmatrix}
       \end{equation*}
+      which is a concatenation of $-\textbf{x}^*$ and $\boldsymbol{\lambda}^*$.
     \end{solution}
   \end{enumerate}
 
