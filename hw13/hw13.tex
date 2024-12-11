@@ -27,7 +27,25 @@
   \end{enumerate}
   You can use a constant step size. Run the stochastic optimizers for the same number of epochs (if you have $n$ data points and your batch size is $m$ then $\textsf{round}(n / m)$ timesteps is one epoch). Compare the performance of these optimizers with each other and with the stochastic gradient descent from the previous homework. Write a report containing graphs of the objective function and the norm of its gradient versus the iteration number. Which stochastic optimizer do you find the most efficient? Which batch size do you recommend? Which step size do you recommend?
   \begin{solution}
-    TODO
+    We provide the plots for the deterministic Nesterov and Adam methods below.
+    \begin{figure}
+      \centering
+      \includegraphics[scale=0.8]{det_nest.png}
+    \end{figure}
+    \begin{figure}
+      \centering
+      \includegraphics[scale=0.8]{det_adam.png}
+    \end{figure}
+    Comparing the two, we see that Adam converges faster with constant $\alpha = 5 \cdot 10^{-2}$. Likewise, for the stochastic methods, we find
+    \begin{figure}
+      \centering
+      \includegraphics[scale=0.8]{stoch_nest.png}
+    \end{figure}
+    \begin{figure}
+      \centering
+      \includegraphics[scale=0.8]{stoch_adam.png}
+    \end{figure}
+    Again, Adam converges faster. We recommend a batch size of $20$ and a step size of $\alpha = 5 \cdot 10^{-2}$. All code can be found \href{https://github.com/elijahkin/amsc660/blob/main/hw13/hw13.ipynb}{here}.
   \end{solution}
 
   \question Consider the KKT system
